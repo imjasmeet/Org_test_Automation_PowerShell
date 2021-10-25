@@ -12,7 +12,7 @@ pipelines:
             image:
               custom:
                 name: releases-docker.jfrog.io/jfrog/pipelines-w19dotnetcore
-                tag: "3.1"
+                tag: "2.1"
           integrations:
             - name: s_artifactory
         execution:
