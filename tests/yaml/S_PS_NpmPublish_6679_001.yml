@@ -20,6 +20,8 @@ pipelines:
       - name: S_PS_NpmPublish_6679_001_1
         type: NpmBuild
         configuration:
+          environmentVariables:
+            JFROG_CLI_BUILD_NUMBER: ${run_id}
           nodePool: win_2019
           affinityGroup: bldGroup
           sourceLocation: "tests/npm"
@@ -28,9 +30,6 @@ pipelines:
             - name: s_artifactory
           inputResources:
             - name: S_PS_NpmPublish_6679_001_GitRepo
-        execution:
-          onStart:
-            - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
       - name: S_PS_NpmPublish_6679_001_2
         type: NpmPublish
         configuration:
@@ -48,6 +47,7 @@ pipelines:
         execution:
           onStart:
             - Get-Command jfrog | Select-Object -ExpandProperty Definition
+            - add_run_variables buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${JFROG_CLI_BUILD_NUMBER}
       - name: S_PS_NpmPublish_6679_001_3
         type: PowerShell
         configuration:
