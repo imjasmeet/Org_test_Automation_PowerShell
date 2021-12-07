@@ -20,6 +20,8 @@ pipelines:
       - name: S_PS_GoPublishModule_6679_001_1
         type: GoPublishModule
         configuration:
+          environmentVariables:
+            JFROG_CLI_BUILD_NUMBER: ${run_id}
           version: "v0.0.${run_number}"
           sourceLocation: "tests/Go/HelloWorld"
           nodePool: win_2019

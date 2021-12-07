@@ -15,13 +15,18 @@ pipelines:
             - name: s_artifactory
         execution:
           onExecute:
+            - Set-Item -Path Env:JFROG_CLI_BUILD_NUMBER -Value $run_id -Force
             - echo "${run_id}" > S_PS_PublishBuildInfo_6679_001.txt
             - jfrog rt upload S_PS_PublishBuildInfo_6679_001.txt test-automation-generic-local
             - add_run_files (Join-Path ([System.IO.Path]::GetTempPath()) jfrog) jfrog
-            - add_run_variables buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${JFROG_CLI_BUILD_NUMBER}
       - name: S_PS_PublishBuildInfo_6679_001_2
+        execution:
+          onStart:
+            - add_run_variables buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${run_id}
         type: PublishBuildInfo
         configuration:
+          environmentVariables:
+            JFROG_CLI_BUILD_NUMBER: ${run_id}
           nodePool: win_2019
           forceXrayScan: true
           outputResources:
