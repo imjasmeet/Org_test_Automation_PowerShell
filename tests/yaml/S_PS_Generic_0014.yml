@@ -13,7 +13,7 @@ pipelines:
       - name: S_PS_Generic_0014_1
         type: PowerShell
         configuration:
-          nodePool: u16dynamic
+          nodePool: u18dynamic
           affinityGroup: PowerShellGroup
           inputSteps:
             - name: S_PS_Generic_0014

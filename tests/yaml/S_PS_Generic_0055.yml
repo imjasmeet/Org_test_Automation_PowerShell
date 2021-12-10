@@ -4,7 +4,7 @@ pipelines:
       - name: S_PS_Generic_0055
         type: PowerShell
         configuration:
-          nodePool: u16dynamic
+          nodePool: u18dynamic
         execution:
           onExecute:
             - write-output "onExecute"
