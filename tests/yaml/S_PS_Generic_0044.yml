@@ -6,10 +6,10 @@ pipelines:
         configuration:
           nodePool: win_2019
           type: host
-            image:
-              custom:
-                name: drydock/u16nodall
-                tag: master
+          image:
+            custom:
+              name: drydock/u16nodall
+              tag: master
         execution:
           onExecute:
             - write-output "hi"
