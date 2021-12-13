@@ -7,8 +7,8 @@ pipelines:
         configuration:
           nodePool: win_2019
           integrations:
-            - name: PSSI_AWS
+            - name: aws
         execution:
           onExecute:
             - write-output "executing step..."
-            - aws s3 ls
+            - aws sts get-caller-identity
