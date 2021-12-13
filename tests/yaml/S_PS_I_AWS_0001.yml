@@ -11,4 +11,4 @@ pipelines:
         execution:
           onExecute:
             - write-output "executing step..."
-            - aws s3 ls
+            - aws sts get-caller-identity
