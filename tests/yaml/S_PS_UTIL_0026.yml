@@ -1,5 +1,5 @@
 resources:
-  - name: S_PS_UTIL
+  - name: S_PS_UTIL_0026
     type: Image
     configuration:
       registry: PSSU_DockerRegistry
@@ -14,7 +14,7 @@ pipelines:
         configuration:
           nodePool: win_2019
           outputResources:
-            - name: S_PS_UTIL
+            - name: S_PS_UTIL_0026
         execution:
           onExecute:
-            - write_output S_PS_UTIL "imageTag=$run_id"
+            - write_output S_PS_UTIL_0026 "imageTag=$run_id"

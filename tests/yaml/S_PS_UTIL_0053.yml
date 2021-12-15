@@ -2,7 +2,7 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_UTIL
+  - name: S_PS_UTIL_0053
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
@@ -18,9 +18,9 @@ pipelines:
           # outputResources:
           #   - name: outgoing
           inputResources:
-            - name: S_PS_UTIL
+            - name: S_PS_UTIL_0053
 
         execution:
           onExecute:
-            - get-childitem $res_S_PS_UTIL_resourcePath
+            - get-childitem $res_S_PS_UTIL_0053_resourcePath
             - add_pipeline_variables "providername=GitHub" 'pipelineVariable1="A string with spaces."' pipelineVariable2='A string with $.'

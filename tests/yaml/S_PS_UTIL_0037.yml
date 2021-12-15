@@ -2,7 +2,7 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_UTIL
+  - name: S_PS_UTIL_0037
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
@@ -16,12 +16,12 @@ pipelines:
         configuration:
           nodePool: win_2019
           inputResources:
-            - name: S_PS_UTIL
+            - name: S_PS_UTIL_0037
           environmentVariables:
             foo: "bar"
 
         execution:
           onExecute:
-            - get-childitem $res_S_PS_UTIL_resourcePath
+            - get-childitem $res_S_PS_UTIL_0037_resourcePath
             - add_pipeline_variables "scm=s_gitHub"
             - export_pipeline_variables "jfrog=pipelines"

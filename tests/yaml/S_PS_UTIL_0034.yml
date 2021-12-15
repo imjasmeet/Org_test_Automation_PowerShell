@@ -2,7 +2,7 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_UTIL
+  - name: S_PS_UTIL_0034
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
@@ -16,11 +16,11 @@ pipelines:
         configuration:
           nodePool: win_2019
           inputResources:
-            - name: S_PS_UTIL
+            - name: S_PS_UTIL_0034
           environmentVariables:
             foo: "bar"
 
         execution:
           onExecute:
-            - get-childitem $res_S_PS_UTIL_resourcePath
+            - get-childitem $res_S_PS_UTIL_0034_resourcePath
             - add_run_variables "scm=gitRepo" 'runVariable1="A string with spaces."' runVariable2='A string with $.'

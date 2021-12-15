@@ -2,7 +2,7 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_UTIL
+  - name: S_PS_UTIL_0070
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
@@ -18,21 +18,21 @@ pipelines:
           # outputResources:
           #   - name: outgoing
           inputResources:
-            - name: S_PS_UTIL
+            - name: S_PS_UTIL_0070
 
         execution:
           onExecute:
-            - get-childitem $res_S_PS_UTIL_resourcePath
+            - get-childitem $res_S_PS_UTIL_0070_resourcePath
             - python --version
             - python -m pip install --upgrade pip
             - pip --version
             - pip install pytest
             - pytest --version
-            - Push-Location $res_S_PS_UTIL_resourcePath
-            - get-childitem $res_S_PS_UTIL_resourcePath
+            - Push-Location $res_S_PS_UTIL_0070_resourcePath
+            - get-childitem $res_S_PS_UTIL_0070_resourcePath
             # - get-childitem tests/core/sampleExecutionFile
             #- pytest tests/test_sample.py
             # - py.test --verbose --junit-xml test-reports/results.xml tests/core/sampleExecutionFile/test_sample.py
-            - Set-Content -Path "$res_S_PS_UTIL_resourcePath/test.xml" -Value "ghjhkggyibgj"
-            - Get-Content -Path $res_S_PS_UTIL_resourcePath/test.xml
-            - save_tests $res_S_PS_UTIL_resourcePath/test.xml
+            - Set-Content -Path "$res_S_PS_UTIL_0070_resourcePath/test.xml" -Value "ghjhkggyibgj"
+            - Get-Content -Path $res_S_PS_UTIL_0070_resourcePath/test.xml
+            - save_tests $res_S_PS_UTIL_0070_resourcePath/test.xml

@@ -2,7 +2,7 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_UTIL
+  - name: S_PS_UTIL_0042
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
@@ -18,16 +18,16 @@ pipelines:
           # outputResources:
           #   - name: outgoing
           inputResources:
-            - name: S_PS_UTIL
+            - name: S_PS_UTIL_0042
 
         execution:
           onExecute:
 
             - get-childitem $run_dir\workspace
-            - get-childitem $res_S_PS_UTIL_resourcePath
+            - get-childitem $res_S_PS_UTIL_0042_resourcePath
 
             # runs
-            - add_run_files -sources "$res_S_PS_UTIL_resourcePath" -name S_PS_UTIL
+            - add_run_files -sources "$res_S_PS_UTIL_0042_resourcePath" -name S_PS_UTIL
 
 
       - name: S_PS_UTIL_0042_2
@@ -37,7 +37,7 @@ pipelines:
           # outputResources:
           #   - name: outgoing
           inputResources:
-            - name: S_PS_UTIL
+            - name: S_PS_UTIL_0042
           inputSteps:
             - name:  S_PS_UTIL_0042
 
@@ -45,7 +45,7 @@ pipelines:
           onExecute:
             - $testvariable
             - get-childitem $run_dir\workspace
-            - get-childitem $res_S_PS_UTIL_resourcePath
+            - get-childitem $res_S_PS_UTIL_0042_resourcePath
             #runs
             - restore_run_files -name S_PS_UTIL -path $step_tmp_dir
             - get-childitem $step_tmp_dir

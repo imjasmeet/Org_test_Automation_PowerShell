@@ -2,7 +2,7 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_UTIL
+  - name: S_PS_UTIL_0062
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
@@ -16,7 +16,7 @@ pipelines:
         configuration:
           nodePool: win_2019
           inputResources:
-            - name: S_PS_UTIL
+            - name: S_PS_UTIL_0062
 
         execution:
           onExecute:
@@ -29,7 +29,7 @@ pipelines:
         type: Bash
         configuration:
           inputResources:
-            - name: S_PS_UTIL
+            - name: S_PS_UTIL_0062
           inputSteps:
             - name:  S_PS_UTIL_0062
 
