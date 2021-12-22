@@ -23,10 +23,10 @@ pipelines:
         execution:
           onExecute:
             - get-childitem $res_S_PS_UTIL_0066_resourcePath
-            - python3 --version
             - python3 -m pip install --upgrade pip
-            - pip --version
+            - python3 --version
             - pip install pytest
+            - pip --version
             - pytest --version
             - Push-Location $res_S_PS_UTIL_0066_resourcePath
             - get-childitem $res_S_PS_UTIL_0066_resourcePath
