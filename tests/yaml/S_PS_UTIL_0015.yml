@@ -1,12 +1,12 @@
-template: true
-valuesFilePath: ../values/gitRepoValues.yml
+# template: true
+# valuesFilePath: ../values/gitRepoValues.yml
 
-resources:
-  - name: S_PS_UTIL_0015
-    type: GitRepo
-    configuration:
-      gitProvider: s_gitHub
-      path: {{ .Values.GitHub.Org_test_Automation.path }}
+# resources:
+#   - name: S_PS_UTIL_0015
+#     type: GitRepo
+#     configuration:
+#       gitProvider: s_gitHub
+#       path: {{ .Values.GitHub.Org_test_Automation.path }}
 
 pipelines:
   - name: pipeline_S_PS_UTIL_0015
@@ -15,8 +15,8 @@ pipelines:
         type: PowerShell
         configuration:
           nodePool: win_2019
-          inputResources:
-            - name: S_PS_UTIL_0015
+          # inputResources:
+          #   - name: S_PS_UTIL_0015
         execution:
           onExecute:
             - write-output "onExecute"
