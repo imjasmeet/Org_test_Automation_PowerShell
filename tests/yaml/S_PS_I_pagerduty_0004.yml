@@ -6,7 +6,7 @@
         configuration:
           nodePool: win_2019
           integrations:
-            - name: i_pagerduty
+            - name: PSSI_pagerduty
         execution:
           onExecute:
-            - send_notification i_pagerduty -text "hello world from bash run number $run_number"
+            - send_notification PSSI_pagerduty -text "hello world from bash run number $run_number"
