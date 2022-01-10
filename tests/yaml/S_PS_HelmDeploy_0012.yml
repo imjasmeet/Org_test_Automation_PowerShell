@@ -108,5 +108,4 @@ pipelines:
               } else {
                 Write-Output "Distribution returned $statusCode"
               }
-            - try { jfrog rt repo-delete simplecharts } catch {}
             - try { helm3 delete simplehelm-from-repo-$run_id --namespace $k8s_namespace } catch {}
