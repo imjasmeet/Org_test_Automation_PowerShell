@@ -57,8 +57,6 @@ pipelines:
             - jfrog rt bce $JFROG_CLI_BUILD_NAME $run_id
             - jfrog rt bp $JFROG_CLI_BUILD_NAME $run_id
             - write_output S_PS_HBGDeploy_5978_0005_buildinfo_resource buildName=$JFROG_CLI_BUILD_NAME buildNumber=$run_id
-          onFailure:
-            - jfrog rt repo-delete simplecharts --quiet
 
       - name: S_PS_HBGDeploy_5978_0005_2
         type: CreateReleaseBundle
@@ -73,9 +71,6 @@ pipelines:
             - name: S_PS_HBGDeploy_5978_0005_buildinfo_resource
           outputResources:
             - name: S_PS_HBGDeploy_5978_0005_releasebundle_resource
-        execution:
-          onFailure:
-            - jfrog rt repo-delete simplecharts --quiet
 
       - name: S_PS_HBGDeploy_5978_0005_3
         type: HelmBlueGreenDeploy
