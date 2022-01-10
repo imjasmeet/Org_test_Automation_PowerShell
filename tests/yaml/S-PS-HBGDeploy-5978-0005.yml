@@ -49,11 +49,7 @@ pipelines:
         execution:
           onExecute:
             - jfrog --version
-            - $json = @{key="simplecharts";rclass="local";packageType="helm";description="This repo is a test repo used by test automation";repoLayoutRef="simple-default"} | ConvertTo-Json -Compress  | Out-File c:\myrequest.json -Encoding Ascii -Force
-            - jfrog rt repo-delete simplecharts; $global:LASTEXITCODE = 0
-            - jfrog rt repo-create c:\myrequest.json
             - cd $res_S_PS_HBGDeploy_5978_0005_git_resource_resourcePath/tests/core/helmbluegreen
-            - jfrog rt u simplehelm-0.3.0.tgz "simplecharts/" --build-name=$JFROG_CLI_BUILD_NAME --build-number=$run_id
             - jfrog rt bce $JFROG_CLI_BUILD_NAME $run_id
             - jfrog rt bp $JFROG_CLI_BUILD_NAME $run_id
             - write_output S_PS_HBGDeploy_5978_0005_buildinfo_resource buildName=$JFROG_CLI_BUILD_NAME buildNumber=$run_id
@@ -119,6 +115,5 @@ pipelines:
               } else {
                 Write-Output "Distribution returned $statusCode"
               }
-            - jfrog rt repo-delete simplecharts; $global:LASTEXITCODE = 0
             - helm3 delete ${blue_release_name}-${run_id} --namespace ${k8s_namespace}; $global:LASTEXITCODE = 0
             - kubectl delete service ${idle_name}-${run_id} --namespace ${k8s_namespace}; $global:LASTEXITCODE = 0

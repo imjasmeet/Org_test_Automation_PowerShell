@@ -45,10 +45,7 @@ pipelines:
         execution:
           onExecute:
             - jfrog --version
-            - $json = @{key="simplecharts";rclass="local";packageType="helm";description="This repo is a test repo used by test automation";repoLayoutRef="simple-default"} | ConvertTo-Json -Compress  | Out-File c:\myrequest.json -Encoding Ascii -Force
-            - jfrog rt repo-create c:\myrequest.json
             - cd $res_S_PS_HelmDeploy_GitRepo_0010_resourcePath/tests/core/helmdeploy
-            - jfrog rt u simplehelm-0.3.0.tgz "simplecharts/"
             - jfrog rt bce $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER
             - jfrog rt bp $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER
             - write_output S_PS_HelmDeploy_BuildInfo_0010 buildName=$JFROG_CLI_BUILD_NAME buildNumber=$JFROG_CLI_BUILD_NUMBER
