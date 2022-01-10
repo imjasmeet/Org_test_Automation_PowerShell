@@ -39,6 +39,7 @@ pipelines:
           onExecute:
             - jfrog --version
             - cd $res_S_PS_HelmDeploy_GitRepo_0008_resourcePath/tests/core/helmdeploy
+            - jfrog rt u simplehelm-0.3.0.tgz "simplecharts/"
             - jfrog rt bce ${JFROG_CLI_BUILD_NAME} ${JFROG_CLI_BUILD_NUMBER}
             - jfrog rt bp ${JFROG_CLI_BUILD_NAME} ${JFROG_CLI_BUILD_NUMBER}
             - write_output S_PS_HelmDeploy_BuildInfo_0008 buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${JFROG_CLI_BUILD_NUMBER}
