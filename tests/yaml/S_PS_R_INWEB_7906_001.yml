@@ -1,0 +1,20 @@
+
+resources:
+  - name: S_PS_R_INWEB_7906_001_IncomingWebhook
+    type: IncomingWebhook
+    configuration:
+      webhookName: PSSR_IW_BasicAuth
+
+pipelines:
+  - name: pipelines_S_PS_R_INWEB_7906_001
+    steps:
+      - name: S_PS_R_INWEB_7906_001
+        type: PowerShell
+        configuration:
+          nodePool: win_2019
+          outputResources:
+            - name: S_PS_R_INWEB_7906_001_IncomingWebhook
+        execution:
+          onExecute:
+            - Write-Output "executing step..."
+            - set_payload -name S_PS_R_INWEB_7906_001_IncomingWebhook -payload ${run_id}
