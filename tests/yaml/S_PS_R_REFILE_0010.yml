@@ -4,14 +4,28 @@ resources:
     type: RemoteFile
     configuration:
       source: s_artifactory
-      fileLocation: example-repo-local/setup/test.sh
-      fileName: test.sh # optional
+      fileLocation: test-automation-generic-local
+      fileName: S_PS_R_REFILE_0010.txt
      # fileDateTime: 19/12/19
 
 pipelines:
-  - name: pipelines_auto
+  - name: pipelines_S_PS_R_REFILE_0010
     steps:
-      - name: S_PS_R_REFILE_0010
+      - name: S_PS_R_REFILE_0010_1
+        type: PowerShell
+        configuration:
+          nodePool: win_2019
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: S_PS_R_REFILE_0010_RemoteFile
+        execution:
+          onExecute:
+            - write-output "executing step..."
+            - Set-Content -Path S_PS_R_REFILE_0010.txt -Value ${run_id}
+            - jfrog rt upload S_PS_R_REFILE_0010.txt test-automation-generic-local
+
+      - name: S_PS_R_REFILE_0010_2
         type: PowerShell
         configuration:
           nodePool: win_2019
@@ -22,4 +36,4 @@ pipelines:
         execution:
           onExecute:
             - write-output "executing step..."
-            - jfrog rt dl example-repo-local/setup/test.sh
+            - if ( -not (Test-Path "${res_S_PS_R_REFILE_0010_RemoteFile_resourcePath}\S_PS_R_REFILE_0010.txt" -PathType Leaf)) { throw "File not found" }
