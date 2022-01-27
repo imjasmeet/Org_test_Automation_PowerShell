@@ -6,16 +6,16 @@ pipelines:
         configuration:
           nodePool: win_2019
           integrations:
-            - name: i_pagerduty
+            - name: PSSI_pagerduty
         execution:
           onExecute:
             - write-output "executing step..."
-            - if($int_i_pagerduty_masterName -eq $null){
+            - if($int_PSSI_pagerduty_masterName -eq $null){
               Write-Error "Stop" -ErrorAction Stop
               }
-            - if($int_i_pagerduty_id -eq $null){
+            - if($int_PSSI_pagerduty_id -eq $null){
               Write-Error "Stop" -ErrorAction Stop
               }
-            - if($int_i_pagerduty_token -eq $null){
+            - if($int_PSSI_pagerduty_token -eq $null){
               Write-Error "Stop" -ErrorAction Stop
               }

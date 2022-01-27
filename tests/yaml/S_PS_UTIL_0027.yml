@@ -2,7 +2,7 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_UTIL
+  - name: S_PS_UTIL_0027
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
@@ -18,18 +18,18 @@ pipelines:
           # outputResources:
           #   - name: outgoing
           inputResources:
-            - name: S_PS_UTIL
+            - name: S_PS_UTIL_0027
 
         execution:
           onExecute:
-            - get-childitem $res_S_PS_UTIL_resourcePath
+            - get-childitem $res_S_PS_UTIL_0027_resourcePath
 #             - python3 --version
             - python -m pip install --upgrade pip
             - pip --version
             - pip install pytest
             - pytest --version
-            - Push-Location $res_S_PS_UTIL_resourcePath
-            - get-childitem $res_S_PS_UTIL_resourcePath
+            - Push-Location $res_S_PS_UTIL_0027_resourcePath
+            - get-childitem $res_S_PS_UTIL_0027_resourcePath
             - get-childitem tests/core/sampleExecutionFile
             #- pytest tests/test_sample.py
             - py.test --verbose --junit-xml test-reports/results.xml tests/core/sampleExecutionFile/test_sample.py

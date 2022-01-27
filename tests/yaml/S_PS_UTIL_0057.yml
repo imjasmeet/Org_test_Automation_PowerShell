@@ -2,7 +2,7 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_UTIL
+  - name: S_PS_UTIL_0057
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
@@ -18,16 +18,16 @@ pipelines:
           # outputResources:
           #   - name: outgoing
           inputResources:
-            - name: S_PS_UTIL
+            - name: S_PS_UTIL_0057
 
         execution:
           onExecute:
             - get-childitem $run_dir\workspace
-            - get-childitem $res_S_PS_UTIL_resourcePath
+            - get-childitem $res_S_PS_UTIL_0057_resourcePath
 
             #pipelines
             - get-childitem $pipeline_workspace_dir
-            - add_pipeline_files -sources "$res_S_PS_UTIL_resourcePath" -name S_PS_UTIL
+            - add_pipeline_files -sources "$res_S_PS_UTIL_0057_resourcePath" -name S_PS_UTIL
 
 
       - name: S_PS_UTIL_0057_2
@@ -37,14 +37,14 @@ pipelines:
           # outputResources:
           #   - name: outgoing
           inputResources:
-            - name: S_PS_UTIL
+            - name: S_PS_UTIL_0057
           inputSteps:
             - name:  S_PS_UTIL_0057
 
         execution:
           onExecute:
             #pipelines
-            - get-childitem $res_S_PS_UTIL_resourcePath
+            - get-childitem $res_S_PS_UTIL_0057_resourcePath
             - get-childitem $step_tmp_dir
             - get-childitem $pipeline_workspace_dir
             - restore_pipeline_files -name S_PS_UTIL -path $step_tmp_dir
