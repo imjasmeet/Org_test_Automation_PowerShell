@@ -7,8 +7,6 @@ resources:
       imageName: ubuntu
       imageTag: latest
 
-
-
 pipelines:
   - name: pipelines_S_PS_R_IMAGE_0021
     steps:
