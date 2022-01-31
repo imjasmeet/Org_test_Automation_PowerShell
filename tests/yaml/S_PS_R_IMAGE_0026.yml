@@ -4,7 +4,7 @@ resources:
     type: Image
     configuration:
       registry: PSSR_DockerRegistry
-      imageName: shipbeta00/jkreq_win
+      imageName: shipbeta00/jfreq_win
       imageTag: latest
 
 pipelines:
