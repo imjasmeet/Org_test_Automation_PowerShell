@@ -3,9 +3,10 @@ resources:
     type: Image
     configuration:
       registry: s_artifactory
-      sourceRepository: docker-virtual
-      imageName: ubuntu
-      imageTag: latest
+      sourceRepository: test-automation-docker-remote
+      imageName: mcr.microsoft.com/windows/nanoserver
+      imageTag: 1809-amd64
+      autoPull: true
 
 pipelines:
   - name: pipelines_S_PS_R_IMAGE_0023
@@ -18,4 +19,9 @@ pipelines:
             - name: S_PS_R_IMAGE_0023_Image
         execution:
           onExecute:
+            - Get-Variable | format-table
             - write-output "executing step..."
+            - if ("$res_S_PS_R_IMAGE_0023_Image_imageName" -ne "mcr.microsoft.com/windows/nanoserver") { throw "Wrong imageName" }
+            - if ("$res_S_PS_R_IMAGE_0023_Image_imageTag" -ne "1809-amd64") { throw "Wrong imageTag" }
+            - if ("$res_S_PS_R_IMAGE_0023_Image_sourceRepository" -ne "test-automation-docker-remote") { throw "Wrong sourceRepository" }
+            - if ("$res_S_PS_R_IMAGE_0023_Image_autoPull" -ne "true") { throw "Wrong value for autoPull" }
