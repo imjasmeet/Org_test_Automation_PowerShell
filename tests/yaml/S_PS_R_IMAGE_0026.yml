@@ -19,32 +19,20 @@ pipelines:
             - name: S_PS_R_IMAGE_0026_Image
         execution:
           onExecute:
-            - write-output "executing step..."
-            - |
-              [ ! -z "$res_S_PS_R_IMAGE_0026_Image_integrationName" ]
-            - |
-              [ ! -z "$res_S_PS_R_IMAGE_0026_Image_operation" ]
-            - |
-              [ ! -z "$res_S_PS_R_IMAGE_0026_Image_registry_name" ]
-            - |
-              [ ! -z "$res_S_PS_R_IMAGE_0026_Image_imageName" ]
-            - |
-              [ ! -z "$res_S_PS_R_IMAGE_0026_Image_isTrigger" ]
-            - |
-              [ ! -z "$res_S_PS_R_IMAGE_0026_Image_registry_masterName" ]
-            - |
-              [ ! -z "$res_S_PS_R_IMAGE_0026_Image_registry_username" ]
-            - |
-              [ ! -z "$res_S_PS_R_IMAGE_0026_Image_resourcePath" ]
-            - |
-              [ ! -z "$res_S_PS_R_IMAGE_0026_Image_registry_id" ]
-            - |
-              [ ! -z "$res_S_PS_R_IMAGE_0026_Image_imageTag" ]
-            - |
-              [ ! -z "$res_S_PS_R_IMAGE_0026_Image_registry_password" ]
-            #- |
-            #  [ ! -z "$res_S_PS_R_IMAGE_0026_Image_registry_url" ]
-            - |
-              [ ! -z "$res_S_PS_R_IMAGE_0026_Image_resourceId" ]
-            - |
-              [ ! -z "$res_S_PS_R_IMAGE_0026_Image_integrationAlias" ]
+            - Get-Variable | format-table
+            - if ([string]::IsNullOrEmpty($res_S_PS_R_IMAGE_0026_Image_integrationName)) { throw "Integration name missing" }
+            - if ([string]::IsNullOrEmpty($res_S_PS_R_IMAGE_0026_Image_operation)) { throw "Image operation missing" }
+            - if ([string]::IsNullOrEmpty($res_S_PS_R_IMAGE_0026_Image_registry_name)) { throw "Registry name missing" }
+            - if ([string]::IsNullOrEmpty($res_S_PS_R_IMAGE_0026_Image_imageName)) { throw "ImageName missing" }
+            - if ([string]::IsNullOrEmpty($res_S_PS_R_IMAGE_0026_Image_isTrigger)) { throw "isTrigger missing" }
+            - if ([string]::IsNullOrEmpty($res_S_PS_R_IMAGE_0026_Image_registry_masterName)) { throw "Registry masterName missing" }
+            - if ([string]::IsNullOrEmpty($res_S_PS_R_IMAGE_0026_Image_resourcePath)) { throw "resourcePath missing" }
+            - if ([string]::IsNullOrEmpty($res_S_PS_R_IMAGE_0026_Image_registry_id)) { throw "registry_id missing" }
+            - if ([string]::IsNullOrEmpty($res_S_PS_R_IMAGE_0026_Image_imageTag)) { throw "imageTag missing" }
+            - if ([string]::IsNullOrEmpty($res_S_PS_R_IMAGE_0026_Image_registry_url)) { throw "registry_url missing" }
+            - if ([string]::IsNullOrEmpty($res_S_PS_R_IMAGE_0026_Image_integrationAlias)) { throw "integrationAlias missing " }
+            - if ([string]::IsNullOrEmpty($res_S_PS_R_IMAGE_0026_Image_resourceId)) { throw "resourceId missing " }
+            - if ([string]::IsNullOrEmpty($res_S_PS_R_IMAGE_0026_Image_registry_username)) { throw "registry_username missing " }
+            - if ([string]::IsNullOrEmpty($res_S_PS_R_IMAGE_0026_Image_registry_password)) { throw "registry_password missing " }
+
+            
