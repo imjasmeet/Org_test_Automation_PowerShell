@@ -4,8 +4,8 @@ resources:
     type: RemoteFile
     configuration:
       source: s_artifactory
-      # fileLocation: example-repo-local/setup/help
-      # #fileName: test.sh # optional
+      fileLocation: example-repo-local/setup/help
+      fileName: test.sh
       fileDateTime: 0/25/25
 
 pipelines:

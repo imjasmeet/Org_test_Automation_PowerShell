@@ -4,12 +4,12 @@ resources:
     type: RemoteFile
     configuration:
       source: s_artifactory
-      # fileLocation: example-repo-local/setup/help
+      fileLocation: example-repo-local/setup
       fileName: invalid # optional
 
 
 pipelines:
-  - name: pipelines_auto
+  - name: pipelines_S_PS_R_REFILE_0009
     steps:
       - name: S_PS_R_REFILE_0009
         type: PowerShell
