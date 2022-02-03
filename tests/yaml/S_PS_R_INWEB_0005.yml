@@ -10,7 +10,7 @@ pipelines:
   - name: pipelines_S_PS_R_INWEB_0005
     steps:
       - name: S_PS_R_INWEB_0005
-        type: Bash
+        type: PowerShell
         configuration:
           nodePool: win_2019
           inputResources:
@@ -19,34 +19,20 @@ pipelines:
           onExecute:
             - write-output "executing step..."
             # if auth type is basic
-            - |
-              [ ! -z "$res_S_PS_R_INWEB_0005_IncomingWebhook_webhookName_username"  ]
-            - |
-              [ ! -z "$res_S_PS_R_INWEB_0005_IncomingWebhook_integrationName"  ]
-            - |
-              [ ! -z "$res_S_PS_R_INWEB_0005_IncomingWebhook_webhookName_authType"  ]
-            - |
-              [ ! -z "$res_S_PS_R_INWEB_0005_IncomingWebhook_webhookName_id"  ]
-            - |
-              [ ! -z "$res_S_PS_R_INWEB_0005_IncomingWebhook_operation"  ]
+            - if ( -not "$res_S_PS_R_INWEB_0005_IncomingWebhook_webhookName_username" ) { throw "Missing webhookName_username"}
+            - if ( -not "$res_S_PS_R_INWEB_0005_IncomingWebhook_integrationName" ) { throw "Missing integrationName"}
+            - if ( -not "$res_S_PS_R_INWEB_0005_IncomingWebhook_webhookName_authType" ) { throw "Missing webhookName_authType"}
+            - if ( -not "$res_S_PS_R_INWEB_0005_IncomingWebhook_webhookName_id" ) { throw "Missing webhookName_id"}
+            - if ( -not "$res_S_PS_R_INWEB_0005_IncomingWebhook_operation" ) { throw "Missing operation"}
             #if auth type is basic
-            - |
-              [ ! -z "$res_S_PS_R_INWEB_0005_IncomingWebhook_webhookName_password"  ]
-            - |
-              [ ! -z "$res_S_PS_R_INWEB_0005_IncomingWebhook_resourceId"  ]
-            - |
-              [ ! -z "$res_S_PS_R_INWEB_0005_IncomingWebhook_resourcePath"  ]
-            - |
-              [ ! -z "$res_S_PS_R_INWEB_0005_IncomingWebhook_integrationAlias"  ]
-            - |
-              [ ! -z "$res_S_PS_R_INWEB_0005_IncomingWebhook_isTrigger"  ]
+            - if ( -not "$res_S_PS_R_INWEB_0005_IncomingWebhook_webhookName_password" ) { throw "Missing webhookName_password"}
+            - if ( -not "$res_S_PS_R_INWEB_0005_IncomingWebhook_resourceId" ) { throw "Missing resourceId"}
+            - if ( -not "$res_S_PS_R_INWEB_0005_IncomingWebhook_resourcePath" ) { throw "Missing resourcePath"}
+            - if ( -not "$res_S_PS_R_INWEB_0005_IncomingWebhook_integrationAlias" ) { throw "Missing integrationAlias"}
+            - if ( -not "$res_S_PS_R_INWEB_0005_IncomingWebhook_isTrigger" ) { throw "Missing isTrigger"}
             #if auth type is HMAC
-            # - |
-            #   [ ! -z "$res_S_PS_R_INWEB_0005_IncomingWebhook_webhookName_secret"  ]
-            - |
-              [ ! -z "$res_S_PS_R_INWEB_0005_IncomingWebhook_webhookName_name"  ]
+            # - if ( -not "$res_S_PS_R_INWEB_0005_IncomingWebhook_webhookName_secret" ) { throw "Missing webhookName_secret"}
+            - if ( -not "$res_S_PS_R_INWEB_0005_IncomingWebhook_webhookName_name" ) { throw "Missing webhookName_name"}
             #if auth type is token
-            # - |
-            #   [ ! -z "$res_S_PS_R_INWEB_0005_IncomingWebhook_webhookName_authorization"  ]
-            - |
-              [ ! -z "$res_S_PS_R_INWEB_0005_IncomingWebhook_webhookName_masterName"  ]
+            # - if ( -not "$res_S_PS_R_INWEB_0005_IncomingWebhook_webhookName_authorization" ) { throw "Missing webhookName_authorization"}
+            - if ( -not "$res_S_PS_R_INWEB_0005_IncomingWebhook_webhookName_masterName" ) { throw "Missing webhookName_masterName"}
