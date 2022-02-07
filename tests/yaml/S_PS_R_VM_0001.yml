@@ -8,7 +8,7 @@ resources:
          - 1.2.3.4
 
 pipelines:
-  - name: pipelines_auto
+  - name: pipeline_S_PS_R_VM_0001
     steps:
       - name: S_PS_R_VM_0001
         type: PowerShell

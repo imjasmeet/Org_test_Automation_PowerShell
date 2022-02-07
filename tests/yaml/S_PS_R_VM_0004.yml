@@ -1,5 +1,5 @@
 resources:
-   - name: S_PS_R_VM_0003_vmCluster
+   - name: S_PS_R_VM_0004_vmCluster
      type: VmCluster
      configuration:
        sshKey: PSSR_SSHKEYS
@@ -7,39 +7,26 @@ resources:
          - 1.2.3.4
 
 pipelines:
-  - name: pipelines_auto
+  - name: pipeline_S_PS_R_VM_0004
     steps:
-      - name: S_PS_R_VM_0003
+      - name: S_PS_R_VM_0004
         type: PowerShell
         configuration:
           inputResources:
-            - name: S_PS_R_VM_0003_vmCluster
+            - name: S_PS_R_VM_0004_vmCluster
         execution:
           onExecute:
             - write-output "executing step..."
-            - |
-              [ ! -z "$res_S_PS_R_VM_0003_vmCluster_targets_0"  ]
-            - |
-              [ ! -z "$res_S_PS_R_VM_0003_vmCluster_sshKey_name"  ]
-            - |
-              [ ! -z "$res_S_PS_R_VM_0003_vmCluster_integrationName"  ]
-            - |
-              [ ! -z "$res_S_PS_R_VM_0003_vmCluster_operation"  ]
-            - |
-              [ ! -z "$res_S_PS_R_VM_0003_vmCluster_targets_len"  ]
-            - |
-              [ ! -z "$res_S_PS_R_VM_0003_vmCluster_sshKey_privateKey"  ]
-            - |
-              [ ! -z "$res_S_PS_R_VM_0003_vmCluster_isTrigger"  ]
-            - |
-              [ ! -z "$res_S_PS_R_VM_0003_vmCluster_resourcePath"  ]
-            - |
-              [ ! -z "$res_S_PS_R_VM_0003_vmCluster_sshKey_masterName"  ]
-            - |
-              [ ! -z "$es_S_PS_R_VM_0003_vmCluster_resourceId"  ]
-            - |
-              [ ! -z "$res_S_PS_R_VM_0003_vmCluster_sshKey_id"  ]
-            - |
-              [ ! -z "$res_S_PS_R_VM_0003_vmCluster_sshKey_publicKey"  ]
-            - |
-              [ ! -z "$res_S_PS_R_VM_0003_vmCluster_integrationAlias"  ]
+            - if ( -not "$res_S_PS_R_VM_0004_vmCluster_targets_0" ) { throw "Missing first target" }
+            - if ( -not "$res_S_PS_R_VM_0004_vmCluster_sshKey_name" ) { throw "Missing SSH key name" }
+            - if ( -not "$res_S_PS_R_VM_0004_vmCluster_integrationName" ) { throw "Missing integration name" }
+            - if ( -not "$res_S_PS_R_VM_0004_vmCluster_operation" ) { throw "Missing operation" }
+            - if ( -not "$res_S_PS_R_VM_0004_vmCluster_targets_len" ) { throw "Missing target count" }
+            - if ( -not "$res_S_PS_R_VM_0004_vmCluster_sshKey_privateKey" ) { throw "Missing private key" }
+            - if ( -not "$res_S_PS_R_VM_0004_vmCluster_isTrigger" ) { throw "Missing isTrigger" }
+            - if ( -not "$res_S_PS_R_VM_0004_vmCluster_resourcePath" ) { throw "Missing resourcePath" }
+            - if ( -not "$res_S_PS_R_VM_0004_vmCluster_sshKey_masterName" ) { throw "Missing SSH key masterName" }
+            - if ( -not "$res_S_PS_R_VM_0004_vmCluster_resourceId" ) { throw "Missing resourceId" }
+            - if ( -not "$res_S_PS_R_VM_0004_vmCluster_sshKey_id" ) { throw "Missing SSH key id" }
+            - if ( -not "$res_S_PS_R_VM_0004_vmCluster_sshKey_publicKey" ) { throw "Missing public key" }
+            - if ( -not "$res_S_PS_R_VM_0004_vmCluster_integrationAlias" ) { throw "Missing integrationAlias" }

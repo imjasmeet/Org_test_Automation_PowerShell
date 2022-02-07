@@ -15,16 +15,14 @@ pipelines:
         type: PowerShell
         configuration:
           nodePool: win_2019
-          # outputResources:
-          #   - name: outgoing
           inputResources:
             - name: S_PS_UTIL_0066
 
         execution:
           onExecute:
             - get-childitem $res_S_PS_UTIL_0066_resourcePath
-            - python3 -m pip install --upgrade pip
-            - python3 --version
+            - python -m pip install --upgrade pip
+            - python --version
             - pip install pytest
             - pip --version
             - pytest --version
