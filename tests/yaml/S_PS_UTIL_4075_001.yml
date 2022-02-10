@@ -16,14 +16,14 @@ pipelines:
         configuration:
           nodePool: win_2019
           inputSteps:
-            - name: S_Bash_util_4075_001_1
+            - name: S_PS_UTIL_4075_001_1
         execution:
           onExecute:
             - |
               $headers = @{}
               $headers['Authorization'] = "Bearer $builder_api_token"
               $steps = Invoke-RestMethod -Method Get -ContentType 'application/json' -Headers $headers -Uri "${pipelines_api_url}/steps?runIds=${run_id}&names=S_PS_UTIL_4075_001_1" -UseBasicParsing
-              $stepId = $steps[0].stepId
+              $stepId = $steps[0].id
               if ( -not $stepId ) { throw "Missing step ID" }
               $stepTestReports = Invoke-RestMethod -Method Get -ContentType 'application/json' -Headers $headers -Uri "${pipelines_api_url}/stepTestReports?stepIds=${stepId}" -UseBasicParsing
               $stepTestReport = $stepTestReports[0]
