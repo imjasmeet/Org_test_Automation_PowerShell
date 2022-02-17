@@ -11,6 +11,7 @@ pipelines:
               custom:
                 name: docker/jfrog_win
                 tag: latest
+                options: "-e HOME=/root"
                 registry: PSSG_DockerRegistry
         execution:
           onExecute:
