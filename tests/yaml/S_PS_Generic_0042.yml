@@ -9,9 +9,8 @@ pipelines:
             type: image
             image:
               custom:
-                name: docker/jfrog_win
-                tag: latest
-                options: "-e HOME=/root"
+                name: drydock/u16nodalls
+                tag: master
                 registry: PSSG_DockerRegistry
         execution:
           onExecute:
