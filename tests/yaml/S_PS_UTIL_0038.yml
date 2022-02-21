@@ -5,8 +5,6 @@ pipelines:
         type: PowerShell
         configuration:
           nodePool: win_2019
-          inputResources:
-            - name: S_PS_UTIL_0038
           environmentVariables:
             foo: "bar"
 
