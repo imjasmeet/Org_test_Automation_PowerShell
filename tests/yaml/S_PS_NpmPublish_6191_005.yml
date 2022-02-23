@@ -27,6 +27,7 @@ pipelines:
         execution:
           onStart:
             - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
+            - replace_envs ${res_S_PS_NpmPublish_6191_005_GitRepo_resourcePath}\tests\npm\package.json
       - name: S_PS_NpmPublish_6191_005_2
         type: NpmPublish
         configuration:
