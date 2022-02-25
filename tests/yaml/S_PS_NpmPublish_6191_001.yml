@@ -31,6 +31,7 @@ pipelines:
         execution:
           onStart:
             - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
+            - replace_envs ${res_S_PS_NpmPublish_6191_001_GitRepo_resourcePath}\tests\npm\package.json
       - name: S_PS_NpmPublish_6191_001_2
         type: NpmPublish
         configuration:
@@ -52,7 +53,7 @@ pipelines:
         execution:
           onExecute:
             - |
-              (jfrog rt curl -XGET "/api/build/${JFROG_CLI_BUILD_NAME}/${run_id}" | ConvertFrom-Json).buildInfo.modules | Where {$_.id -eq "npm-example:0.0.1"} | ForEach { $artifact = $_.artifacts }
+              (jfrog rt curl -XGET "/api/build/${JFROG_CLI_BUILD_NAME}/${run_id}" | ConvertFrom-Json).buildInfo.modules | Where {$_.id -like "npm-example:0.0.*" } | ForEach { $artifact = $_.artifacts }
               $artifactPath = $artifact.path
               $artifactSha = $artifact.sha256
               $headers = @{ 'Authorization' = "Bearer $builder_api_token" }
