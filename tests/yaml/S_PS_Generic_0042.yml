@@ -11,7 +11,7 @@ pipelines:
               custom:
                 name: drydock/u16nodalls
                 tag: master
-                registry: PSSG_DockerRegistry
+                registry: PSSG_DockerRegistry_PSG_01
         execution:
           onExecute:
             - write-output "hi"
