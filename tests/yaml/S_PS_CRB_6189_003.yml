@@ -88,9 +88,16 @@ pipelines:
           onExecute:
             # Can't edit the buildinfo.json, so it has to be the signature.
             - jfrog rt search artifactory-pipe-info/S_PS_CRB_6189_003_1/{{gitBranch}}/${run_number}/s-S_PS_CRB_6189_003_2.json.sig
-            - |
-              $head_sig_path = (jfrog rt search artifactory-pipe-info/pipeline_S_PS_CRB_6189_003/{{gitBranch}}/*/s-S_PS_CRB_6189_003_2.json.sig | ConvertFrom-Json)[0].path
+            - | 
+              $head_sig_path = (jfrog rt s artifactory-pipe-info/pipeline_S_PS_CRB_6189_003/{{gitBranch}}/$run_number/s-S_PS_CRB_6189_003_2.json.sig | ConvertFrom-Json)[0].path
               Write-Output $head_sig_path
+              if ([string]::IsNullOrEmpty("$head_sig_path")) {
+                $head_sig_path = (jfrog rt s artifactory-pipe-info/pipeline_S_PS_CRB_6189_003/$run_number/s-S_PS_CRB_6189_003_2.json.sig | ConvertFrom-Json)[0].path
+              }
+              if ([string]::IsNullOrEmpty("$head_sig_path")) {
+                Write-Output "s-S_PS_CRB_6189_003_2.json.sig not found"
+                exit 1
+              }
               jfrog rt upload $res_S_PS_CRB_6189_003_GitRepo_resourcePath/tests/artifacts/invalidGPGSig $head_sig_path --quiet
 
       - name: S_PS_CRB_6189_003_5
