@@ -1,0 +1,60 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_PS_HelmDeploy_8138_001_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation.path }}
+      branches:
+        include: master
+
+  - name: S_PS_HelmDeploy_8138_001_HelmChart
+    type: HelmChart
+    configuration:
+      sourceArtifactory: s_artifactory
+      repository: test-automation-helm-local
+      version: version
+      chart: simplehelm
+
+pipelines:
+  - name: S_PS_HelmDeploy_8138_001
+    configuration:
+      environmentVariables:
+        readOnly:
+          k8s_namespace: "pipe-master-pool"
+      nodePool: win_2019
+    steps:
+      - name: S_PS_HelmDeploy_8138_001_1
+        type: HelmPublish
+        configuration:
+          chartPath: "./tests/core/helmdeploy/simplehelm"
+          helmVersion: 3
+          inputResources:
+            - name: S_PS_HelmDeploy_8138_001_GitRepo
+          outputResources:
+            - name: S_PS_HelmDeploy_8138_001_HelmChart
+          integrations:
+            - name: s_artifactory
+        execution:
+          onStart:
+            - add_run_variables RELEASE_NAME="s-ps-helmdeploy-8138-001-${run_id}" JFROG_CLI_BUILD_NUMBER=${run_id}
+      - name: S_PS_HelmDeploy_8138_001_2
+        type: HelmDeploy
+        configuration:
+          inputResources:
+            - name: S_PS_HelmDeploy_8138_001_HelmChart
+            - name: S_PS_HelmDeploy_8138_001_GitRepo
+          integrations:
+            - name: s_artifactory
+            - name: s_kubernetes
+          chartVersion: 0.3.0
+          chartPath: ./
+          helmVersion: 3
+          releaseName: ${RELEASE_NAME}
+          flags: "--wait --timeout 120s -n ${k8s_namespace} --debug"
+          valueFilePaths:
+            - ${res_S_PS_HelmDeploy_8138_001_GitRepo_resourcePath}\tests\core\helmdeploy\simplehelm\values.yaml
+          lint: true
+          dryRun: true
