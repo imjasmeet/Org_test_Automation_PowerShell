@@ -2,8 +2,9 @@ pipelines:
   - name: pipeline_S_PS_UTIL_0036
     configuration:
       environmentVariables:
-        foo: "bar"
-        test: "pipelevel"
+        readOnly:
+          foo: "bar"
+          test: "pipelevel"
     steps:
       - name: S_PS_UTIL_0036
         type: PowerShell
