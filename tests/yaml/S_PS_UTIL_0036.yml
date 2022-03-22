@@ -11,7 +11,9 @@ pipelines:
         execution:
           onExecute:
             - add_run_variables "scm=gitRepo"
+            - Write-Host $jfrog
             - export_run_variables "jfrog=pipelines"
+            - Write-Host $jfrog
             - get-childitem $jfrog
             - if($jfrog -ne "pipelines"){
               Write-Error "Stop" -ErrorAction Stop
