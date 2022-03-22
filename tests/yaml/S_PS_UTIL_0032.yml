@@ -10,7 +10,7 @@ pipelines:
           nodePool: win_2019
         execution:
           onExecute:
-            - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
+            - add_run_variables execution_run_number=${run_id}
 
       - name: S_PS_UTIL_0032_2
         type: PowerShell
@@ -20,10 +20,10 @@ pipelines:
             - name: S_PS_UTIL_0032
         execution:
           onExecute:
-            - Write-Host $JFROG_CLI_BUILD_NUMBER
+            - Write-Host $execution_run_number
             - Write-Host ${run_id}
             - export_run_variables
-            - if($JFROG_CLI_BUILD_NUMBER -ne ${run_id}){
+            - if($execution_run_number -ne ${run_id}){
               Write-Error "Stop" -ErrorAction Stop
               }
 
@@ -35,10 +35,10 @@ pipelines:
             - name: S_PS_UTIL_0032_2
         execution:
           onExecute:
-            - Write-Host $JFROG_CLI_BUILD_NUMBER
+            - Write-Host $execution_run_number
             - Write-Host ${run_id}
             - export_run_variables
-            - if($JFROG_CLI_BUILD_NUMBER -ne ${run_id}){
+            - if($execution_run_number -ne ${run_id}){
               Write-Error "Stop" -ErrorAction Stop
               }
 
