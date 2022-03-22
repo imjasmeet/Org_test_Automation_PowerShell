@@ -18,6 +18,7 @@ pipelines:
           nodePool: win_2019
         execution:
           onExecute:
+            - Write-Host $scm $runVariable1 $runVariable2
             - if($scm -ne "gitRepo"){
               Write-Error "Stop" -ErrorAction Stop
               }
@@ -34,6 +35,9 @@ pipelines:
           nodePool: win_2019
         execution:
           onExecute:
+            - Write-Host $scm 
+            - Write-Host $runVariable1 
+            - Write-Host $runVariable2
             - if($scm -ne "gitRepo"){
               Write-Error "Stop" -ErrorAction Stop
               }
