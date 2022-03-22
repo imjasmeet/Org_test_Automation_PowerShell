@@ -7,8 +7,14 @@ pipelines:
           nodePool: win_2019
           environmentVariables:
             foo: "bar"
-
+            jfrog: "artifactory"
         execution:
           onExecute:
             - add_run_variables "scm=gitRepo"
-            - export_run_variables
+            - export_run_variables "jfrog=pipelines"
+            - get-childitem $jfrog
+            - if($jfrog -ne "pipelines"){
+              Write-Error "Stop" -ErrorAction Stop
+              }
+
+

@@ -11,3 +11,35 @@ pipelines:
         execution:
           onExecute:
             - add_run_variables "scm=gitRepo" 'runVariable1="A string with spaces."' runVariable2='A string with $.'
+
+      - name: S_PS_UTIL_0034_2
+        type: PowerShell
+        configuration:
+          nodePool: win_2019
+        execution:
+          onExecute:
+            - if($scm -ne "gitRepo"){
+              Write-Error "Stop" -ErrorAction Stop
+              }
+            - if($runVariable1 -ne "A string with spaces."){
+              Write-Error "Stop" -ErrorAction Stop
+              }
+            - if($runVariable2 -ne "A string with $."){
+              Write-Error "Stop" -ErrorAction Stop
+              }
+
+      - name: S_PS_UTIL_0034_3
+        type: PowerShell
+        configuration:
+          nodePool: win_2019
+        execution:
+          onExecute:
+            - if($scm -ne "gitRepo"){
+              Write-Error "Stop" -ErrorAction Stop
+              }
+            - if($runVariable1 -ne "A string with spaces."){
+              Write-Error "Stop" -ErrorAction Stop
+              }
+            - if($runVariable2 -ne "A string with $."){
+              Write-Error "Stop" -ErrorAction Stop
+              }
