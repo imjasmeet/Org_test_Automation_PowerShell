@@ -7,15 +7,14 @@ pipelines:
           nodePool: win_2019
           environmentVariables:
             foo: "bar"
-            jfrog: "artifactory"
+            test: "artifactory"
         execution:
           onExecute:
             - add_run_variables "scm=gitRepo"
-            - Write-Host $jfrog
-            - export_run_variables "jfrog=pipelines"
-            - Write-Host $jfrog
-            - get-childitem $jfrog
-            - if($jfrog -ne "pipelines"){
+            - Write-Host $test
+            - add_run_variables "test=pipelines"
+            - Write-Host $test
+            - if($test -ne "artifactory"){
               Write-Error "Stop" -ErrorAction Stop
               }
 
