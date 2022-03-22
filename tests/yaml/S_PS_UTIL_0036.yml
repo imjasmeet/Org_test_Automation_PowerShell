@@ -14,7 +14,7 @@ pipelines:
             - Write-Host $test
             - add_run_variables "test=pipelines"
             - Write-Host $test
-            - if($test -ne "artifactory"){
+            - if($test -ne "pipelines"){
               Write-Error "Stop" -ErrorAction Stop
               }
 
