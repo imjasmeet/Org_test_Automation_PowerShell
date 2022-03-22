@@ -13,9 +13,25 @@ pipelines:
             - add_run_variables "scm=gitRepo"
             - Write-Host $test
             - add_run_variables "test=pipelines"
+#             - export_run_variables
             - Write-Host $test
             - if($test -ne "pipelines"){
               Write-Error "Stop" -ErrorAction Stop
               }
-
+              
+      - name: S_PS_UTIL_0036_2
+        type: PowerShell
+        configuration:
+          inputSteps:
+            - name: S_PS_UTIL_0036
+          nodePool: win_2019
+          environmentVariables:
+            foo: "bar"
+            test: "artifactory"
+        execution:
+          onExecute:
+            - Write-Host $test
+            - if($test -ne "pipelines"){
+              Write-Error "Stop" -ErrorAction Stop
+              }
 
