@@ -1,18 +1,15 @@
 pipelines:
   - name: pipeline_S_PS_UTIL_0036
-    configuration:
-      environmentVariables:
-        readOnly:
-          foo: "bar"
-          test: "pipelevel"
     steps:
       - name: S_PS_UTIL_0036
         type: PowerShell
         configuration:
           nodePool: win_2019
+          environmentVariables:
+            foo: "bar"
+            test: "pipe"
         execution:
           onExecute:
-            - add_run_variables "scm=gitRepo"
             - Write-Host $test
             - add_run_variables "test=step1"
             - Write-Host $test
@@ -28,7 +25,7 @@ pipelines:
           nodePool: win_2019
           environmentVariables:
             foo: "bar"
-            test: "artifactory"
+            test: "pipe"
         execution:
           onExecute:
             - Write-Host $test
