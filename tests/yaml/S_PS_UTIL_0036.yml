@@ -1,21 +1,21 @@
 pipelines:
   - name: pipeline_S_PS_UTIL_0036
+    configuration:
+      environmentVariables:
+        foo: "bar"
+        test: "pipelevel"
     steps:
       - name: S_PS_UTIL_0036
         type: PowerShell
         configuration:
           nodePool: win_2019
-          environmentVariables:
-            foo: "bar"
-            test: "artifactory"
         execution:
           onExecute:
             - add_run_variables "scm=gitRepo"
             - Write-Host $test
-            - add_run_variables "test=pipelines"
-            - export_run_variables
+            - add_run_variables "test=step1"
             - Write-Host $test
-            - if($test -ne "pipelines"){
+            - if($test -ne "step1"){
               Write-Error "Stop" -ErrorAction Stop
               }
               
@@ -31,7 +31,9 @@ pipelines:
         execution:
           onExecute:
             - Write-Host $test
-            - if($test -ne "pipelines"){
-              Write-Error "Stop" -ErrorAction Stop
-              }
+            - export_run_variables
+            - Write-Host $test
+#             - if($test -ne "step2"){
+#               Write-Error "Stop" -ErrorAction Stop
+#               }
 
