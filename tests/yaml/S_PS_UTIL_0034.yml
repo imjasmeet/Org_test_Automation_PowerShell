@@ -5,9 +5,6 @@ pipelines:
         type: PowerShell
         configuration:
           nodePool: win_2019
-          environmentVariables:
-            foo: "bar"
-
         execution:
           onExecute:
             - add_run_variables "scm=gitRepo" 'runVariable1="A string with spaces."' runVariable2='A string with $.'
@@ -16,9 +13,12 @@ pipelines:
         type: PowerShell
         configuration:
           nodePool: win_2019
+          inputSteps:
+            - name: S_PS_UTIL_0034
         execution:
           onExecute:
             - Write-Host $scm $runVariable1 $runVariable2
+            - add_run_variables "fromStep2=S_PS_UTIL_0034_2"
             - if($scm -ne "gitRepo"){
               Write-Error "Stop" -ErrorAction Stop
               }
@@ -33,11 +33,14 @@ pipelines:
         type: PowerShell
         configuration:
           nodePool: win_2019
+          inputSteps:
+            - name: S_PS_UTIL_0034_2
         execution:
           onExecute:
             - Write-Host $scm 
             - Write-Host $runVariable1 
             - Write-Host $runVariable2
+            - Write-Host $fromStep2
             - if($scm -ne "gitRepo"){
               Write-Error "Stop" -ErrorAction Stop
               }
@@ -45,5 +48,8 @@ pipelines:
               Write-Error "Stop" -ErrorAction Stop
               }
             - if($runVariable2 -ne "A string with $."){
+              Write-Error "Stop" -ErrorAction Stop
+              }
+            - if($fromStep2 -ne "S_PS_UTIL_0034_2"){
               Write-Error "Stop" -ErrorAction Stop
               }
