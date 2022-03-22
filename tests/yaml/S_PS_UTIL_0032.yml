@@ -1,13 +1,6 @@
 template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
-resources:
-  # - name: S_PS_UTIL_0032
-  #   type: GitRepo
-  #   configuration:
-  #     gitProvider: s_gitHub
-  #     path: {{ .Values.GitHub.Org_test_Automation.path }}
-
 pipelines:
   - name: pipeline_S_PS_UTIL_0032
     steps:
@@ -27,6 +20,8 @@ pipelines:
             - name: S_PS_UTIL_0032
         execution:
           onExecute:
+            - Write-Host $JFROG_CLI_BUILD_NUMBER
+            - Write-Host ${run_id}
             - export_run_variables
             - if($JFROG_CLI_BUILD_NUMBER -ne ${run_id}){
               Write-Error "Stop" -ErrorAction Stop
@@ -40,6 +35,8 @@ pipelines:
             - name: S_PS_UTIL_0032_2
         execution:
           onExecute:
+            - Write-Host $JFROG_CLI_BUILD_NUMBER
+            - Write-Host ${run_id}
             - export_run_variables
             - if($JFROG_CLI_BUILD_NUMBER -ne ${run_id}){
               Write-Error "Stop" -ErrorAction Stop
