@@ -11,7 +11,7 @@ pipelines:
         execution:
           onExecute:
             - Write-Host $test
-            - add_run_variables "test=step1"
+            - add_run_variables "test=step1" "hello=world"
             - Write-Host $test
             - if($test -ne "step1"){
               Write-Error "Stop" -ErrorAction Stop
@@ -31,7 +31,9 @@ pipelines:
             - Write-Host $test
             - export_run_variables
             - Write-Host $test
-#             - if($test -ne "step2"){
-#               Write-Error "Stop" -ErrorAction Stop
-#               }
-
+            - if($test -ne "step1"){
+              Write-Error "Stop" -ErrorAction Stop
+              }
+            - if($hello -ne "world"){
+              Write-Error "Stop" -ErrorAction Stop
+              }
