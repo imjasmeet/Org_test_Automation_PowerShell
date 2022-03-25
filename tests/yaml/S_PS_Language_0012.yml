@@ -9,12 +9,12 @@ pipelines:
             type: image
             image:
               auto:
-                language: dotnetcore
+                language: dotnet
                 versions:
-                  - 2
+                  - 6
         execution:
           onExecute:
             - dotnet --version
-            - if($(dotnet --version) -ne "2.1.807"){
+            - if(-Not(@(dotnet --version) -match '6.0\.')) {
               Write-Error "Stop" -ErrorAction Stop
               }

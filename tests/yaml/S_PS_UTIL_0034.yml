@@ -15,6 +15,8 @@ pipelines:
         type: PowerShell
         configuration:
           nodePool: win_2019
+          inputSteps:
+            - name: S_PS_UTIL_0034
         execution:
           onExecute:
             - if($foo -ne "fromStep1"){
@@ -42,6 +44,8 @@ pipelines:
         type: PowerShell
         configuration:
           nodePool: win_2019
+          inputSteps:
+            - name: S_PS_UTIL_0034_2
         execution:
           onExecute:
             - Write-Host foo=${foo} runVariable1=${runVariable1} runVariable2={runVariable2} step2={step2}
