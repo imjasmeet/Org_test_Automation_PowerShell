@@ -20,8 +20,8 @@ pipelines:
             - name: S_PS_UTIL_0032
         execution:
           onExecute:
-            - Write-Host ${JFROG_CLI_BUILD_NUMBER}
-            - if($JFROG_CLI_BUILD_NUMBER -ne ${run_id}){
+            - Write-Host ${execution_run_number}
+            - if($execution_run_number -ne ${run_id}){
               Write-Error "Stop" -ErrorAction Stop
               }
 
@@ -33,11 +33,7 @@ pipelines:
             - name: S_PS_UTIL_0032_2
         execution:
           onExecute:
-            - Write-Host ${JFROG_CLI_BUILD_NUMBER}
-            - if($JFROG_CLI_BUILD_NUMBER -ne ${run_id}){
+            - Write-Host ${execution_run_number}
+            - if($execution_run_number -ne ${run_id}){
               Write-Error "Stop" -ErrorAction Stop
               }
-
-
-
-            
