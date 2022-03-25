@@ -7,10 +7,9 @@ pipelines:
           nodePool: win_2019
           environmentVariables:
             foo: "bar"
-
         execution:
           onExecute:
-            - add_run_variables "scm=gitRepo" 'runVariable1="A string with spaces."' runVariable2='A string with $.'
+            - add_run_variables "scm=gitRepo" "foo=fromStep1" 'runVariable1="A string with spaces."' runVariable2='A string with $.'
 
       - name: S_PS_UTIL_0034_2
         type: PowerShell
@@ -18,6 +17,11 @@ pipelines:
           nodePool: win_2019
         execution:
           onExecute:
+            - if($foo -ne "fromStep1"){
+              Write-Error "Stop" -ErrorAction Stop
+              }
+            - add_run_variables "foo=fromStep2" 'step2="addedOneMoreVariable."' 
+            - Write-Host foo=${foo} runVariable1=${runVariable1} runVariable2={runVariable2} step2={step2}
             - if($scm -ne "gitRepo"){
               Write-Error "Stop" -ErrorAction Stop
               }
@@ -25,6 +29,12 @@ pipelines:
               Write-Error "Stop" -ErrorAction Stop
               }
             - if($runVariable2 -ne "A string with $."){
+              Write-Error "Stop" -ErrorAction Stop
+              }
+            - if($foo -ne "fromStep2"){
+              Write-Error "Stop" -ErrorAction Stop
+              }
+            - if($step2 -ne "addedOneMoreVariable."){
               Write-Error "Stop" -ErrorAction Stop
               }
 
@@ -34,6 +44,7 @@ pipelines:
           nodePool: win_2019
         execution:
           onExecute:
+            - Write-Host foo=${foo} runVariable1=${runVariable1} runVariable2={runVariable2} step2={step2}
             - if($scm -ne "gitRepo"){
               Write-Error "Stop" -ErrorAction Stop
               }
@@ -41,5 +52,11 @@ pipelines:
               Write-Error "Stop" -ErrorAction Stop
               }
             - if($runVariable2 -ne "A string with $."){
+              Write-Error "Stop" -ErrorAction Stop
+              }
+            - if($foo -ne "fromStep2"){
+              Write-Error "Stop" -ErrorAction Stop
+              }
+            - if($step2 -ne "addedOneMoreVariable."){
               Write-Error "Stop" -ErrorAction Stop
               }
