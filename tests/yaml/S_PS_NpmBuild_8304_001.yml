@@ -1,0 +1,56 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_PS_NpmBuild_8304_001_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_PowerShell.path }}
+      branches:
+        include: {{gitBranch}}
+  - name: S_PS_NpmBuild_8304_001_FileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: test-automation-generic-local/myFile
+
+pipelines:
+  - name: pipeline_S_PS_NpmBuild_8304_001
+    configuration:
+      nodePool: win_2019
+      jfrogCliVersion: 2
+    steps:
+      - name: S_PS_NpmBuild_8304_001_1
+        type: PowerShell
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_PS_NpmBuild_8304_001_GitRepo
+          outputResources:
+            -  name: S_PS_NpmBuild_8304_001_FileSpec
+        execution:
+          onExecute:
+            - pushd (Join-Path (find_resource_variable S_PS_NpmBuild_8304_001_GitRepo resourcePath) "tests\npm")
+            - replace_envs package.json
+            - jfrog rt upload package.json test-automation-generic-local/package.json
+            - write_output S_PS_NpmBuild_8304_001_FileSpec pattern="test-automation-generic-local/package.json"
+
+      - name: S_PS_NpmBuild_8304_001_2
+        type: NpmBuild
+        configuration:
+          inputResources:
+            - name: S_PS_NpmBuild_8304_001_GitRepo
+            - name: S_PS_NpmBuild_8304_001_FileSpec
+          integrations:
+            - name: s_artifactory
+          sourceLocation: "tests/npm"
+          resolverRepo: test-automation-npm-remote
+        execution:
+          onStart:
+            - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
+            - replace_envs ${res_S_PS_NpmBuild_8304_001_GitRepo_resourcePath}\tests\npm\package.json
+            - pushd (Join-Path (find_resource_variable S_PS_NpmBuild_8304_001_GitRepo resourcePath) "tests\npm")
+            - Remove-Item package.json # removing the file to be replaced using the FileSpec
+            - popd
