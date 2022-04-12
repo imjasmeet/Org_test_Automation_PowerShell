@@ -1,0 +1,56 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_PS_GradleBuild_5680_0038_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_PowerShell.path }}
+      branches:
+        include: {{gitBranch}}
+
+  - name: S_PS_GradleBuild_5680_0038_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: pipeline_S_PS_GradleBuild_5680_0038
+    configuration:
+      nodePool: win_2019
+    steps:
+      - name: S_PS_GradleBuild_5680_0038_1
+        type: GradleBuild
+        configuration:
+          inputResources:
+            - name: S_PS_GradleBuild_5680_0038_GitRepo
+          outputResources:
+            - name: S_PS_GradleBuild_5680_0038_BuildInfo
+          integrations:
+            - name: s_artifactory
+          autoPublishBuildInfo: true
+          resolverRepo: "test-automation-gradle-remote"
+          deployerRepo: "test-automation-gradle-local"
+          sourceLocation: "tests/gradle"
+          gradleCommand: "hello"
+        execution:
+          onStart:
+            - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
+
+      - name: S_PS_GradleBuild_5680_0038_2
+        type: PowerShell
+        configuration:
+          inputResources:
+            - name: S_PS_GradleBuild_5680_0038_BuildInfo
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - jfrog rt curl -XGET /api/build/${JFROG_CLI_BUILD_NAME}/${JFROG_CLI_BUILD_NUMBER} -o ${step_tmp_dir}/response
+            - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${JFROG_CLI_BUILD_NUMBER}&artifacts=1"
+            - if ( "$res_S_PS_GradleBuild_5680_0038_BuildInfo_buildName" -ne "${JFROG_CLI_BUILD_NAME}" ) { throw "Wrong buildName" }
+            - if ( "$res_S_PS_GradleBuild_5680_0038_BuildInfo_buildNumber" -ne "${JFROG_CLI_BUILD_NUMBER}" ) { throw "Wrong buildNumber" }
+            - type ${step_tmp_dir}/response
+            - if ( (Get-Content "${step_tmp_dir}/response" | ConvertFrom-JSON).buildInfo.properties["buildInfo.env.int_s_artifactory_apikey"])  { throw "Variable found" }
+            - if ( (Get-Content "${step_tmp_dir}/response" | ConvertFrom-JSON).buildInfo.properties["buildInfo.env.builder_api_token"])  { throw "Variable found" }
