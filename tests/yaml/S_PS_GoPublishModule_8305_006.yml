@@ -2,7 +2,7 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_GoPublishModule_0006_GitRepo
+  - name: S_PS_GoPublishModule_8305_006_GitRepo
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
@@ -11,19 +11,21 @@ resources:
         include: {{gitBranch}}
 
 pipelines:
-  - name: pipeline_S_PS_GoPublishModule_0006
+  - name: pipeline_S_PS_GoPublishModule_8305_006
     configuration:
       nodePool: win_2019
+      jfrogCliVersion: 2
     steps:
-      - name: S_PS_GoPublishModule_0006
+      - name: S_PS_GoPublishModule_8305_006_1
         type: GoPublishModule
         configuration:
           environmentVariables:
-            source_location: "tests/Go"
+            include_self: "true"
           inputResources:
-            - name: S_PS_GoPublishModule_0006_GitRepo
+            - name: S_PS_GoPublishModule_8305_006_GitRepo
           integrations:
             - name: s_artifactory
-          version: "v1.6.${run_number}"
-          targetRepository: test-automation-go-local
-          sourceLocation: "${source_location}"
+          version: "v1.83056.${run_number}"
+          targetRepository: "test-automation-go-local"
+          sourceLocation: "tests/Go"
+          self: ${include_self}

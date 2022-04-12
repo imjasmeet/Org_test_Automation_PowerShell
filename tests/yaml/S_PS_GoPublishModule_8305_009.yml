@@ -2,7 +2,7 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_GoPublishModule_0014_GitRepo
+  - name: S_PS_GoPublishModule_8305_009_GitRepo
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
@@ -10,34 +10,35 @@ resources:
       branches:
         include: {{gitBranch}}
 
-  - name: S_PS_GoPublishModule_0014_BuildInfo
+  - name: S_PS_GoPublishModule_8305_009_BuildInfo
     type: BuildInfo
     configuration:
       sourceArtifactory: s_artifactory
 
 pipelines:
-  - name: pipeline_S_PS_GoPublishModule_0014
+  - name: pipeline_S_PS_GoPublishModule_8305_009
     configuration:
       nodePool: win_2019
+      jfrogCliVersion: 2
     steps:
-      - name: S_PS_GoPublishModule_0014_1
+      - name: S_PS_GoPublishModule_8305_009_1
         type: GoPublishModule
         configuration:
           environmentVariables:
             auto_publish: "false"
           inputResources:
-            - name: S_PS_GoPublishModule_0014_GitRepo
+            - name: S_PS_GoPublishModule_8305_009_GitRepo
           outputResources:
-            - name: S_PS_GoPublishModule_0014_BuildInfo
-          version: "v1.14.${run_number}"
+            - name: S_PS_GoPublishModule_8305_009_BuildInfo
+          version: "v1.83059.${run_number}"
           targetRepository: test-automation-go-local
           autoPublishBuildInfo: ${auto_publish}
           sourceLocation: "tests/Go"
-      - name: S_PS_GoPublishModule_0014_2
+      - name: S_PS_GoPublishModule_8305_009_2
         type: PowerShell
         configuration:
           inputResources:
-            - name: S_PS_GoPublishModule_0014_BuildInfo
+            - name: S_PS_GoPublishModule_8305_009_BuildInfo
           integrations:
             - name: s_artifactory
         execution:

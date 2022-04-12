@@ -24,6 +24,6 @@ pipelines:
             - name: S_PS_GoPublishModule_0007_GitRepo
           integrations:
             - name: s_artifactory
-          version: "v0.7.${run_number}"
+          version: "v1.7.${run_number}"
           targetRepository: "${target_repository}"
           sourceLocation: "tests/Go"
