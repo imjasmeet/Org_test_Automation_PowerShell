@@ -1,0 +1,14 @@
+pipelines:
+  - name: pipelines_S_PS_R_REFILE_8312_000
+    configuration:
+      nodePool: win_2019
+    steps:
+      - name: S_PS_R_REFILE_8312_000
+        type: PowerShell
+        configuration:
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - Set-Content -Path S_PS_R_REFILE_8312_000-artifact.txt -Value S_PS_R_REFILE_8312_000
+            - jfrog rt upload S_PS_R_REFILE_8312_000-artifact.txt test-automation-generic-local/S_PS_R_REFILE_8312/S_PS_R_REFILE_8312_000-artifact.txt

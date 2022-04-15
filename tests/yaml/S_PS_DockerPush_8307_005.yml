@@ -1,0 +1,74 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_PS_DockerPush_8307_005_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_PowerShell.path }}
+      branches:
+        include: {{gitBranch}}
+
+  - name: S_PS_DockerPush_8307_005_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: pipeline_S_PS_DockerPush_8307_005
+    configuration:
+      jfrogCliVersion: 2
+      nodePool: win_2019
+    steps:
+      - name: S_PS_DockerPush_8307_005_1
+        type: DockerBuild
+        configuration:
+          affinityGroup: S_PS_DockerPush_8307_005
+          dockerImageName: ${artifactory_registry_url}/test-automation-docker-local/s_ps_dockerpush_8307
+          dockerImageTag: ${run_id}
+          inputResources:
+            - name: S_PS_DockerPush_8307_005_GitRepo
+          integrations:
+            - name: s_artifactory
+        execution:
+          onStart:
+            - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
+            - |
+              $artifactory_url = [System.Uri]$int_s_artifactory_url
+              $artifactory_registry_host = $artifactory_url.Host
+              $artifactory_registry_port = $artifactory_url.Port
+              if ($artifactory_registry_port -eq 80) {
+                add_run_variables artifactory_registry_url="${artifactory_registry_host}"
+              } else {
+                add_run_variables artifactory_registry_url="${artifactory_registry_host}:${artifactory_registry_port}"
+              }
+            - Push-Location $res_S_PS_DockerPush_8307_005_GitRepo_resourcePath
+            - Set-Content -Path './Dockerfile' -Value 'FROM mcr.microsoft.com/windows/nanoserver:1809'
+      - name: S_PS_DockerPush_8307_005_2
+        type: DockerPush
+        configuration:
+          affinityGroup: S_PS_DockerPush_8307_005
+          targetRepository: test-automation-docker-local
+          autoPublishBuildInfo: true
+          inputSteps:
+            - name: S_PS_DockerPush_8307_005_1
+          outputResources:
+            - name: S_PS_DockerPush_8307_005_BuildInfo
+          integrations:
+            - name: s_artifactory
+      - name: S_PS_DockerPush_8307_005_3
+        type: PowerShell
+        configuration:
+          environmentVariables:
+            target: test-automation-docker-local
+          affinityGroup: S_PS_DockerPush_8307_005
+          inputResources:
+            - name: S_PS_DockerPush_8307_005_BuildInfo
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - if ( "${res_S_PS_DockerPush_8307_005_BuildInfo_buildName}" -ne "${JFROG_CLI_BUILD_NAME}" ) { throw "Wrong buildName" }
+            - if ( "${res_S_PS_DockerPush_8307_005_BuildInfo_buildNumber}" -ne "${run_id}") { throw "Wrong buildNumber" }
+            - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${run_id}&artifacts=1"

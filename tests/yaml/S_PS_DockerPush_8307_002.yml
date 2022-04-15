@@ -1,0 +1,101 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_PS_DockerPush_8307_002_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_PowerShell.path }}
+      branches:
+        include: {{gitBranch}}
+
+  - name: S_PS_DockerPush_8307_002_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: pipeline_S_PS_DockerPush_8307_002
+    configuration:
+      jfrogCliVersion: 2
+      nodePool: win_2019
+    steps:
+      - name: S_PS_DockerPush_8307_002_1
+        type: DockerBuild
+        configuration:
+          affinityGroup: S_PS_DockerPush_8307_002
+          dockerImageName: ${artifactory_registry_url}/test-automation-docker-local/s_ps_dockerpush_8307_2
+          dockerImageTag: ${run_id}
+          inputResources:
+            - name: S_PS_DockerPush_8307_002_GitRepo
+          integrations:
+            - name: s_artifactory
+        execution:
+          onStart:
+            - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
+            - |
+              $artifactory_url = [System.Uri]$int_s_artifactory_url
+              $artifactory_registry_host = $artifactory_url.Host
+              $artifactory_registry_port = $artifactory_url.Port
+              if ($artifactory_registry_port -eq 80) {
+                add_run_variables artifactory_registry_url="${artifactory_registry_host}"
+              } else {
+                add_run_variables artifactory_registry_url="${artifactory_registry_host}:${artifactory_registry_port}"
+              }
+            - cd $res_S_PS_DockerPush_8307_002_GitRepo_resourcePath
+            - Set-Content -Path './Dockerfile' -Value 'FROM mcr.microsoft.com/windows/nanoserver:1809'
+
+      - name: S_PS_DockerPush_8307_002_2
+        type: DockerPush
+        configuration:
+          affinityGroup: S_PS_DockerPush_8307_002
+          targetRepository: test-automation-docker-local
+          autoPublishBuildInfo: true
+          inputSteps:
+            - name: S_PS_DockerPush_8307_002_1
+          outputResources:
+            - name: S_PS_DockerPush_8307_002_BuildInfo
+          integrations:
+            - name: s_artifactory
+
+      - name: S_PS_DockerPush_8307_002_3
+        type: PowerShell
+        configuration:
+          inputResources:
+            - name: S_PS_DockerPush_8307_002_BuildInfo
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - $script:buildInfo = jfrog rt curl -XGET "/api/build/${JFROG_CLI_BUILD_NAME}/${run_id}" | ConvertFrom-Json
+            - $script:buildInfo = $buildInfo.buildInfo
+            - $script:buildInfo | ConvertTo-Json -Depth 100
+            - |
+              Foreach ($module in $buildInfo.modules) {
+                if ($module.id -eq "s_ps_dockerpush_8307_2:${run_id}") {
+                  $script:artifact = $module.artifacts[0]
+                }
+              }
+            - $script:artifact | ConvertTo-Json -Depth 100
+            - $script:artifactPath = $script:artifact.path
+            - Write-Output $script:artifactPath
+            - $script:artifactSha = $script:artifact.sha256
+            - Write-Output $script:artifactSha
+            - |
+              $script:headers = @{}
+              $script:headers['Authorization'] = "Bearer $builder_api_token"
+            - $script:stepArtifactResponsePath = Join-Path "${step_tmp_dir}" "${step_name}_stepArtifact.json"
+            - $script:stepArtifactUrl = "${pipelines_api_url}/stepArtifacts?artifactPath=${artifactPath}&artifactSha=${artifactSha}&artifactType=artifact"
+            - Write-Output $script:stepArtifactUrl
+            - Invoke-WebRequest "$script:stepArtifactUrl" -Headers $script:headers -TimeoutSec 60 -ContentType "application/json" -UseBasicParsing -OutFile "$script:stepArtifactResponsePath"
+            - type $script:stepArtifactResponsePath
+            - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${run_id}&artifacts=1"
+            - $script:stepArtifact = type $script:stepArtifactResponsePath | ConvertFrom-Json
+            - Write-Output $script:stepArtifact
+            - $script:stepArtifactSha = $script:stepArtifact.artifactSha
+            - Write-Output $script:stepArtifactSha
+            - |
+              if ("$script:stepArtifactSha" -ne "$script:artifactSha") {
+                return 1
+              }
