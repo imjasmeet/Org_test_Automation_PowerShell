@@ -84,22 +84,22 @@ pipelines:
         execution:
           onExecute:
             - |
-              $releaseBundleName = find_resource_variable S_PS_CreateReleaseBundle_6237_008_ReleaseBundle name
-              $releaseBundleVersion = find_resource_variable S_PS_CreateReleaseBundle_6237_008_ReleaseBundle version
-              $distributionUrl = $res_S_PS_CreateReleaseBundle_6237_008_ReleaseBundle_sourceDistribution_url
-              $encoded_auth = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("${res_S_PS_CreateReleaseBundle_6237_008_ReleaseBundle_sourceDistribution_user}:${res_S_PS_CreateReleaseBundle_6237_008_ReleaseBundle_sourceDistribution_apikey}"))
-              check_no_verify_ssl
-              $headers = @{'Authorization' = "Basic $encoded_auth";'Content-Type' = "application/json"}
-              $releaseBundle = Invoke-RestMethod "${distributionUrl}/api/v1/release_bundle/${releaseBundleName}/${releaseBundleVersion}" -Method Get -Headers $headers -TimeoutSec 60 -ContentType 'application/json' -UseBasicParsing
-              Write-Output "Deleting release bundle..."
-              jfrog config add distribution --overwrite --insecure-tls=$no_verify_ssl --dist-url $int_s_distribution_url --user $int_s_distribution_user --apikey $int_s_distribution_apikey --interactive=false
-              jfrog config use distribution
-              jfrog rt release-bundle-delete --delete-from-dist=true --insecure-tls=$no_verify_ssl $releaseBundleName $releaseBundleVersion
-              jfrog config remove distribution
-              Write-Output "Checking resources..."
-              if ( $releaseBundle.artifacts.length -ne "2" ) { throw "Wrong number of artifacts" }
-              Write-Output $releaseBundle.artifacts
-              $artifactOne = $releaseBundle.artifacts | Where {$_.sourceRepoPath -eq "test-automation-generic-local/S_PS_CreateReleaseBundle_6237_008_1.txt"}
-              $artifactTwo = $releaseBundle.artifacts | Where {$_.sourceRepoPath -eq "test-automation-generic-local/S_PS_CreateReleaseBundle_6237_008_2.txt"}
-              if ( $artifactOne.sourceRepoPath -ne "test-automation-generic-local/S_PS_CreateReleaseBundle_6237_008_1.txt" ) { throw "Wrong artifact" }
-              if ( $artifactTwo.sourceRepoPath -ne "test-automation-generic-local/S_PS_CreateReleaseBundle_6237_008_2.txt" ) { throw "Wrong artifact" }
+                $releaseBundleName = find_resource_variable S_PS_CreateReleaseBundle_6237_008_ReleaseBundle name
+                $releaseBundleVersion = find_resource_variable S_PS_CreateReleaseBundle_6237_008_ReleaseBundle version
+                $distributionUrl = $res_S_PS_CreateReleaseBundle_6237_008_ReleaseBundle_sourceDistribution_url
+                $encoded_auth = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("${res_S_PS_CreateReleaseBundle_6237_008_ReleaseBundle_sourceDistribution_user}:${res_S_PS_CreateReleaseBundle_6237_008_ReleaseBundle_sourceDistribution_apikey}"))
+                check_no_verify_ssl
+                $headers = @{'Authorization' = "Basic $encoded_auth";'Content-Type' = "application/json"}
+                $releaseBundle = Invoke-RestMethod "${distributionUrl}/api/v1/release_bundle/${releaseBundleName}/${releaseBundleVersion}" -Method Get -Headers $headers -TimeoutSec 60 -ContentType 'application/json' -UseBasicParsing
+                Write-Output "Deleting release bundle..."
+                jfrog config add distribution --overwrite --insecure-tls=$no_verify_ssl --dist-url $int_s_distribution_url --user $int_s_distribution_user --apikey $int_s_distribution_apikey --interactive=false
+                jfrog config use distribution
+                jfrog rt release-bundle-delete --delete-from-dist=true --insecure-tls=$no_verify_ssl $releaseBundleName $releaseBundleVersion
+                jfrog config remove distribution
+                Write-Output "Checking resources..."
+                if ( $releaseBundle.artifacts.length -ne "2" ) { throw "Wrong number of artifacts" }
+                Write-Output $releaseBundle.artifacts
+                $artifactOne = $releaseBundle.artifacts | Where {$_.sourceRepoPath -eq "test-automation-generic-local/S_PS_CreateReleaseBundle_6237_008_1.txt"}
+                $artifactTwo = $releaseBundle.artifacts | Where {$_.sourceRepoPath -eq "test-automation-generic-local/S_PS_CreateReleaseBundle_6237_008_2.txt"}
+                if ( $artifactOne.sourceRepoPath -ne "test-automation-generic-local/S_PS_CreateReleaseBundle_6237_008_1.txt" ) { throw "Wrong artifact" }
+                if ( $artifactTwo.sourceRepoPath -ne "test-automation-generic-local/S_PS_CreateReleaseBundle_6237_008_2.txt" ) { throw "Wrong artifact" }
