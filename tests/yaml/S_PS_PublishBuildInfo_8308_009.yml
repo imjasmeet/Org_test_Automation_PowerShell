@@ -1,0 +1,34 @@
+resources:
+  - name: S_PS_PublishBuildInfo_8308_009_output
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: S_PS_PublishBuildInfo_8308_009
+    configuration:
+      jfrogCliVersion: 2
+      nodePool: win_2019
+    steps:
+      - name: S_PS_PublishBuildInfo_8308_009_1
+        type: PowerShell
+        configuration:
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id} buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${run_id}
+            - echo "${run_id}" > S_PS_PublishBuildInfo_8308_009.txt
+            - jfrog rt upload S_PS_PublishBuildInfo_8308_009.txt test-automation-generic-local
+            - add_run_files (Join-Path ([System.IO.Path]::GetTempPath()) jfrog) jfrog
+      - name: S_PS_PublishBuildInfo_8308_009_2
+        type: PublishBuildInfo
+        configuration:
+          forceXrayScan: true
+          outputResources:
+            - name: S_PS_PublishBuildInfo_8308_009_output
+          inputSteps:
+            - name: S_PS_PublishBuildInfo_8308_009_1
+        execution:
+          onComplete:
+            - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${run_id}&artifacts=1"
