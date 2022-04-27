@@ -1,0 +1,46 @@
+resources:
+  - name: S_PS_XrayScan_8311_002_BuildInfo_input
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+  - name: S_PS_XrayScan_8311_002_BuildInfo_output
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: S_PS_XrayScan_8311_002
+    configuration:
+      jfrogCliVersion: 2
+      nodePool: win_2019
+    steps:
+      - name: S_PS_XrayScan_8311_002_1
+        type: PowerShell
+        configuration:
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - echo "${run_id}" > S_PS_XrayScan_8311_002.txt
+            - jfrog rt upload S_PS_XrayScan_8311_002.txt test-automation-generic-local
+            - add_run_files (Join-Path ([System.IO.Path]::GetTempPath()) jfrog) jfrog
+            - add_run_variables buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${run_id}
+      - name: S_PS_XrayScan_8311_002_2
+        type: PublishBuildInfo
+        execution:
+          onStart:
+            - $env:JFROG_CLI_BUILD_NUMBER = $run_id
+        configuration:
+          forceXrayScan: false
+          outputResources:
+            - name: S_PS_XrayScan_8311_002_BuildInfo_output
+          inputSteps:
+            - name: S_PS_XrayScan_8311_002_1
+      - name: S_PS_XrayScan_8311_002_3
+        type: XrayScan
+        configuration:
+          inputResources:
+            - name: S_PS_XrayScan_8311_002_BuildInfo_output
+        execution:
+          onComplete:
+            - jfrog rt curl -XDELETE "/api/build/${res_S_PS_XrayScan_8311_002_BuildInfo_output_buildName}?buildNumbers=${res_S_PS_XrayScan_8311_002_BuildInfo_output_buildNumber}&artifacts=1"
