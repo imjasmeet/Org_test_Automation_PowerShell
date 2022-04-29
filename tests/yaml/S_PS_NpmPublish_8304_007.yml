@@ -1,0 +1,56 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_PS_NpmPublish_8304_007_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: second_s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_PowerShell.path }}
+      branches:
+        include: {{gitBranch}}
+  - name: S_PS_NpmPublish_8304_007_buildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: second_s_artifactory
+
+pipelines:
+  - name: S_PS_NpmPublish_8304_007
+    configuration:
+      jfrogCliVersion: 2
+      nodePool: second_win_2019
+    steps:
+      - name: S_PS_NpmPublish_8304_007_1
+        type: NpmBuild
+        configuration:
+          environmentVariables:
+            JFROG_CLI_BUILD_NUMBER: ${run_id}
+          affinityGroup: bldGroup
+          sourceLocation: "tests/npm"
+          resolverRepo: "test-automation-npm-remote"
+          integrations:
+            - name: second_s_artifactory
+          inputResources:
+            - name: S_PS_NpmPublish_8304_007_GitRepo
+        execution:
+          onStart:
+          - replace_envs ${res_S_PS_NpmPublish_8304_007_GitRepo_resourcePath}\tests\npm\package.json
+      - name: S_PS_NpmPublish_8304_007_2
+        type: NpmPublish
+        configuration:
+          affinityGroup: bldGroup
+          autoPublishBuildInfo: true
+          deployerRepo: "test-automation-npm-local"
+          forceXrayScan: true
+          integrations:
+            - name: second_s_artifactory
+          inputSteps:
+            - name: S_PS_NpmPublish_8304_007_1
+          outputResources:
+            - name: S_PS_NpmPublish_8304_007_buildInfo
+        execution:
+          onStart:
+            - Get-Command jfrog | Select-Object -ExpandProperty Definition
+            - add_run_variables buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${JFROG_CLI_BUILD_NUMBER}
+          onComplete:
+            - jfrog rt curl -XDELETE "/api/build/${buildName}?buildNumbers=${buildNumber}&artifacts=1&project=second"
