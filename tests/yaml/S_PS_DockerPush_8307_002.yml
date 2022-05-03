@@ -68,34 +68,15 @@ pipelines:
             - name: s_artifactory
         execution:
           onExecute:
-            - $script:buildInfo = jfrog rt curl -XGET "/api/build/${JFROG_CLI_BUILD_NAME}/${run_id}" | ConvertFrom-Json
-            - $script:buildInfo = $buildInfo.buildInfo
-            - $script:buildInfo | ConvertTo-Json -Depth 100
             - |
-              Foreach ($module in $buildInfo.modules) {
-                if ($module.id -eq "s_ps_dockerpush_8307_2:${run_id}") {
-                  $script:artifact = $module.artifacts[0]
-                }
-              }
-            - $script:artifact | ConvertTo-Json -Depth 100
-            - $script:artifactPath = $script:artifact.path
-            - Write-Output $script:artifactPath
-            - $script:artifactSha = $script:artifact.sha256
-            - Write-Output $script:artifactSha
-            - |
-              $script:headers = @{}
-              $script:headers['Authorization'] = "Bearer $builder_api_token"
-            - $script:stepArtifactResponsePath = Join-Path "${step_tmp_dir}" "${step_name}_stepArtifact.json"
-            - $script:stepArtifactUrl = "${pipelines_api_url}/stepArtifacts?artifactPath=${artifactPath}&artifactSha=${artifactSha}&artifactType=artifact"
-            - Write-Output $script:stepArtifactUrl
-            - Invoke-WebRequest "$script:stepArtifactUrl" -Headers $script:headers -TimeoutSec 60 -ContentType "application/json" -UseBasicParsing -OutFile "$script:stepArtifactResponsePath"
-            - type $script:stepArtifactResponsePath
-            - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${run_id}&artifacts=1"
-            - $script:stepArtifact = type $script:stepArtifactResponsePath | ConvertFrom-Json
-            - Write-Output $script:stepArtifact
-            - $script:stepArtifactSha = $script:stepArtifact.artifactSha
-            - Write-Output $script:stepArtifactSha
-            - |
-              if ("$script:stepArtifactSha" -ne "$script:artifactSha") {
-                return 1
-              }
+              $buildInfo = jfrog rt curl -XGET "/api/build/${JFROG_CLI_BUILD_NAME}/${run_id}" | ConvertFrom-Json
+              $module = $buildInfo.buildInfo.modules | Where {$_.id -eq "s_ps_dockerpush_8307_2:${run_id}"}
+              $artifact = $module.artifacts | Where {$_.name -eq "manifest.json"}
+              Write-Output $artifact
+              $artifactPath = $artifact.path
+              $artifactSha = $artifact.sha256
+              $headers = @{ 'Authorization' = "Bearer $builder_api_token" }
+              $stepArtifact = Invoke-RestMethod -Method Get -ContentType 'application/json' -Headers $headers -Uri "${pipelines_api_url}/stepArtifacts?artifactPath=test-automation-docker-local/${artifactPath}&artifactSha=${artifactSha}&artifactType=artifact" -UseBasicParsing
+              Write-Output $stepArtifact
+              jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${run_id}&artifacts=1"
+              if ( $stepArtifact.artifactSha -ne $artifactSha ) { throw "SHA doesn't match" }

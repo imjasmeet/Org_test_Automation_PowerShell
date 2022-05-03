@@ -22,6 +22,7 @@ pipelines:
   - name: pipeline_S_PS_DockerPush_8307_006
     configuration:
       jfrogCliVersion: 2
+      nodePool: win_2019
     steps:
       - name: S_PS_DockerPush_8307_006_1
         type: DockerBuild
