@@ -2,40 +2,40 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_GoPublishModule_8305_015_GitRepo
+  - name: S_PS_GoPublishModule_8305_017_GitRepo
     type: GitRepo
     configuration:
-      gitProvider: s_gitHub
+      gitProvider: second_s_gitHub
       path: {{ .Values.GitHub.Org_test_Automation_PowerShell.path }}
       branches:
         include: {{gitBranch}}
-  - name: S_PS_GoPublishModule_8305_015_buildInfo
+  - name: S_PS_GoPublishModule_8305_017_buildInfo
     type: BuildInfo
     configuration:
-      sourceArtifactory: s_artifactory
+      sourceArtifactory: second_s_artifactory
 
 pipelines:
-  - name: S_PS_GoPublishModule_8305_015
+  - name: S_PS_GoPublishModule_8305_017
     configuration:
-      nodePool: win_2019
+      nodePool: second_win_2019
       jfrogCliVersion: 2
     steps:
-      - name: S_PS_GoPublishModule_8305_015_1
+      - name: S_PS_GoPublishModule_8305_017_1
         type: GoPublishModule
         configuration:
           environmentVariables:
             JFROG_CLI_BUILD_NUMBER: ${run_id}
-          version: "v1.830514.${run_number}"
+          version: "v1.830517.${run_number}"
           sourceLocation: "tests/Go/HelloWorld"
           autoPublishBuildInfo: true
           forceXrayScan: true
           integrations:
-            - name: s_artifactory
+            - name: second_s_artifactory
           targetRepository: test-automation-go-local
           outputResources:
-            - name: S_PS_GoPublishModule_8305_015_buildInfo
+            - name: S_PS_GoPublishModule_8305_017_buildInfo
           inputResources:
-            - name: S_PS_GoPublishModule_8305_015_GitRepo
+            - name: S_PS_GoPublishModule_8305_017_GitRepo
         execution:
           onComplete:
-            - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${run_id}&artifacts=1"
+            - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${run_id}&artifacts=1&project=second"
