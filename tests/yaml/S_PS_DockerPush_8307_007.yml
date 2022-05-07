@@ -18,11 +18,11 @@ pipelines:
   - name: S_PS_DockerPush_8307_007
     configuration:
       jfrogCliVersion: 2
+      nodePool: win_2019
     steps:
       - name: S_PS_DockerPush_8307_007_1
         type: DockerBuild
         configuration:
-          nodePool: win_2019
           affinityGroup: S_PS_DockerPush_8307_007
           dockerImageName: ${artifactory_registry_url}/test-automation-docker-local/s_ps_dockerpush_8307_007
           dockerImageTag: ${run_id}
@@ -39,14 +39,13 @@ pipelines:
               $artifactory_registry_host = $artifactory_url.Host
               $artifactory_registry_port = $artifactory_url.Port
               if ($artifactory_registry_port -eq 80) {
-              add_run_variables artifactory_registry_url="${artifactory_registry_host}"
+                add_run_variables artifactory_registry_url="${artifactory_registry_host}"
               } else {
                 add_run_variables artifactory_registry_url="${artifactory_registry_host}:${artifactory_registry_port}"
               }
       - name: S_PS_DockerPush_8307_007_2
         type: DockerPush
         configuration:
-          nodePool: win_2019
           autoPublishBuildInfo: true
           forceXrayScan: true
           affinityGroup: S_PS_DockerPush_8307_007
@@ -57,16 +56,6 @@ pipelines:
             - name: s_artifactory
           outputResources:
             - name: S_PS_DockerPush_8307_007_buildInfo
-      - name: S_PS_DockerPush_8307_007_3
-        type: PowerShell
-        configuration:
-          nodePool: win_2019
-          inputResources:
-            - name: S_PS_DockerPush_8307_007_buildInfo
-          inputSteps:
-            - name: S_PS_DockerPush_8307_007_2
-          integrations:
-            - name: s_artifactory
         execution:
-          onExecute:
-            - jfrog rt curl -XDELETE "/api/build/${res_S_PS_DockerPush_8307_007_buildInfo_buildName}?buildNumbers=${res_S_PS_DockerPush_8307_007_buildInfo_buildNumber}&artifacts=1"
+          onComplete:
+            - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${run_id}&artifacts=1"
