@@ -2,60 +2,60 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_DockerPush_8307_008_GitRepo
+  - name: S_PS_DockerPush_8307_009_GitRepo
     type: GitRepo
     configuration:
-      gitProvider: s_gitHub
+      gitProvider: second_s_gitHub
       path: {{ .Values.GitHub.Org_test_Automation_PowerShell.path }}
       branches:
         include: {{gitBranch}}
-  - name: S_PS_DockerPush_8307_008_buildInfo
+  - name: S_PS_DockerPush_8307_009_buildInfo
     type: BuildInfo
     configuration:
-      sourceArtifactory: s_artifactory
+      sourceArtifactory: second_s_artifactory
 
 pipelines:
-  - name: S_PS_DockerPush_8307_008
+  - name: S_PS_DockerPush_8307_009
     configuration:
       jfrogCliVersion: 2
-      nodePool: win_2019
+      nodePool: second_win_2019
     steps:
-      - name: S_PS_DockerPush_8307_008_1
+      - name: S_PS_DockerPush_8307_009_1
         type: DockerBuild
         configuration:
-          affinityGroup: S_PS_DockerPush_8307_008
-          dockerImageName: ${artifactory_registry_url}/test-automation-docker-local/s_ps_dockerpush_8307_008
+          affinityGroup: S_PS_DockerPush_8307_009
+          dockerImageName: ${artifactory_registry_url}/test-automation-docker-local/s_ps_dockerpush_8307_009
           dockerImageTag: ${run_id}
           dockerFileLocation: "tests/docker"
           inputResources:
-            - name: S_PS_DockerPush_8307_008_GitRepo
+            - name: S_PS_DockerPush_8307_009_GitRepo
           integrations:
-            - name: s_artifactory
+            - name: second_s_artifactory
         execution:
           onStart:
             - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
             - |
-              $artifactory_url = [System.Uri]$int_s_artifactory_url
+              $artifactory_url = [System.Uri]$int_second_s_artifactory_url
               $artifactory_registry_host = $artifactory_url.Host
               $artifactory_registry_port = $artifactory_url.Port
               if ($artifactory_registry_port -eq 80) {
-                add_run_variables artifactory_registry_url="${artifactory_registry_host}"
+              add_run_variables artifactory_registry_url="${artifactory_registry_host}"
               } else {
                 add_run_variables artifactory_registry_url="${artifactory_registry_host}:${artifactory_registry_port}"
               }
-      - name: S_PS_DockerPush_8307_008_2
+      - name: S_PS_DockerPush_8307_009_2
         type: DockerPush
         configuration:
           autoPublishBuildInfo: true
           forceXrayScan: true
-          affinityGroup: S_PS_DockerPush_8307_008
+          affinityGroup: S_PS_DockerPush_8307_009
           targetRepository: test-automation-docker-local
           inputSteps:
-            - name: S_PS_DockerPush_8307_008_1
+            - name: S_PS_DockerPush_8307_009_1
           integrations:
-            - name: s_artifactory
+            - name: second_s_artifactory
           outputResources:
-            - name: S_PS_DockerPush_8307_008_buildInfo
+            - name: S_PS_DockerPush_8307_009_buildInfo
         execution:
           onComplete:
-            - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${run_id}&artifacts=1"
+            - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${run_id}&artifacts=1&project=second"
