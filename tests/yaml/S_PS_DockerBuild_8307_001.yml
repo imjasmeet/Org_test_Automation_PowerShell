@@ -51,7 +51,7 @@ pipelines:
             - name: s_artifactory
         execution:
           onExecute:
-            - docker rmi "${artifactory_registry_url}/test-automation-docker-local/s_ps_dockerbuild_8307:${run_id}" || true
+            - docker rmi "${artifactory_registry_url}/test-automation-docker-local/s_ps_dockerbuild_8307:${run_id}"
             - if ( "${buildStepName}" -ne "S_PS_DockerBuild_8307_001_1" ) { throw "Wrong buildStepName" }
             - if ( "${S_PS_DockerBuild_8307_001_1_payloadType}" -ne "docker" ) { throw "Wrong payloadType" }
             - if ( "${S_PS_DockerBuild_8307_001_1_buildNumber}" -ne "${JFROG_CLI_BUILD_NUMBER}" ) { throw "Wrong buildNumber" }
