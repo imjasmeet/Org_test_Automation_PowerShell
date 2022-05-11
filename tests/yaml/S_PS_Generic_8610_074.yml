@@ -1,0 +1,16 @@
+pipelines:
+  - name: S_PS_Generic_8610_074_pipe
+    steps:
+      - name: S_PS_Generic_8610_074_step
+        type: PowerShell
+        configuration:
+          nodePool: win_2019
+          integrations:
+            - name: S_PS_Generic_8610_artifactory
+        execution:
+          onExecute:
+            - write-output onExecute
+          onFailure:
+            - write-output onFailure
+          onComplete:
+            - write-output onComplete

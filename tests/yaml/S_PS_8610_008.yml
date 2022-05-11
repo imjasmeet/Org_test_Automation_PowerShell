@@ -1,0 +1,21 @@
+pipelines:
+  - name: S_PS_8610_008_pipe
+    steps:
+      - name: S_PS_8610_008_step
+        type: PowerShell
+        configuration:
+          nodePool: win_2019
+        execution:
+          onStart:
+            - badcommand
+          onFailure:
+            - |
+                $body = (@{statusCode = 4013} | ConvertTo-Json) # cancel itself
+                $auth = @{ Authorization = "Bearer $builder_api_token" }
+                $full_url = "${pipelines_api_url}/steps/${step_id}"
+                Invoke-RestMethod -Method Put -Body $body  -ContentType 'application/json' -Headers $auth -Uri $full_url
+            - write-output onFailure
+            - start-sleep 200
+            - write-output finished # this should never show up in console
+          onComplete:
+            - write-output finished # this should never show up in console

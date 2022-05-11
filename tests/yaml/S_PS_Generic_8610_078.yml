@@ -1,0 +1,14 @@
+pipelines:
+  - name: S_PS_Generic_8610_078_pipe
+    steps:
+      - name: S_PS_Generic_8610_078_step
+        type: PowerShell
+        configuration:
+          nodePool: win_2019
+          runtime:
+            type: host
+        execution:
+          onExecute:
+            - write-output onExecute
+          onSuccess:
+            - badcommand
