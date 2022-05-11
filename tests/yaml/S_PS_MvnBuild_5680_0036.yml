@@ -1,0 +1,47 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_PS_MvnBuild_5680_0036_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_PowerShell.path }}
+      branches:
+        include: {{gitBranch}}
+
+pipelines:
+  - name: pipeline_S_PS_MvnBuild_5680_0036
+    configuration:
+      nodePool: win_2019
+    steps:
+      - name: S_PS_MvnBuild_5680_0036_1
+        type: MvnBuild
+        configuration:
+          inputResources:
+            - name: S_PS_MvnBuild_5680_0036_GitRepo
+          integrations:
+            - name: s_artifactory
+          sourceLocation: "tests/mvn"
+          resolverSnapshotRepo: test-automation-mvn-remote
+          resolverReleaseRepo: test-automation-mvn-remote
+          deployerSnapshotRepo: test-automation-mvn-local
+          deployerReleaseRepo: test-automation-mvn-local
+
+      - name: S_PS_MvnBuild_5680_0036_2
+        type: PowerShell
+        configuration:
+          inputSteps:
+            - name: S_PS_MvnBuild_5680_0036_1
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - if ( "${buildStepName}" -ne "S_PS_MvnBuild_5680_0036_1" ) { throw "Wrong buildStepName" }
+            - if ( "${S_PS_MvnBuild_5680_0036_1_payloadType}" -ne "mvn" ) { throw "Wrong payloadType" }
+            - if ( "${S_PS_MvnBuild_5680_0036_1_buildNumber}" -ne "${JFROG_CLI_BUILD_NUMBER}" ) { throw "Wrong buildNumber" }
+            - if ( "${S_PS_MvnBuild_5680_0036_1_buildName}" -ne "${JFROG_CLI_BUILD_NAME}" ) { throw "Wrong buildName" }
+            - if ( "${S_PS_MvnBuild_5680_0036_1_isPromoted}" -ne "false" ) { throw "Wrong isPromoted" }
+            - restore_run_files jfrog jfrog
+            - ls jfrog
+            - if ( -not ( Test-Path "jfrog/builds" -Type Container ) ) { throw "Run state not found"}

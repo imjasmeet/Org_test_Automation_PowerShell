@@ -1,0 +1,34 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_PS_GradleBuild_8306_003_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_PowerShell.path }}
+      branches:
+        include: {{gitBranch}}
+
+pipelines:
+  - name: pipeline_S_PS_GradleBuild_8306_003
+    configuration:
+      jfrogCliVersion: 2
+      nodePool: win_2019
+    steps:
+      - name: S_PS_GradleBuild_8306_003
+        type: GradleBuild
+        configuration:
+          inputResources:
+            - name: S_PS_GradleBuild_8306_003_GitRepo
+          integrations:
+            - name: s_artifactory
+          configFileName: config
+          configFileLocation: .
+          gradleCommand: "hello"
+        execution:
+          onStart:
+            - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
+            - Push-Location (find_resource_variable $inputGitRepoResourceName resourcePath)
+            - Copy-Item -Path "tests\gradle\*" -Recurse
+            - Pop-Location
