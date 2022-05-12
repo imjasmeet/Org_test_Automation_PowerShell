@@ -1,0 +1,67 @@
+resources:
+  - name: S_PS_CreateReleaseBundle_8310_004_Aql
+    type: Aql
+    configuration:
+      sourceArtifactory: s_artifactory
+      query: 'items.find({"$and": [{"repo": {"$eq": "test-automation-generic-local"}}, {"name": {"$match": "S_PS_CreateReleaseBundle_8310_004.txt"}}]})'
+
+  - name: S_PS_CreateReleaseBundle_8310_004_ReleaseBundle
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+
+pipelines:
+  - name: pipeline_S_PS_CreateReleaseBundle_8310_004
+    configuration:
+      nodePool: win_2019
+      jfrogCliVersion: 2
+    steps:
+      - name: S_PS_CreateReleaseBundle_8310_004_1
+        type: PowerShell
+        configuration:
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: S_PS_CreateReleaseBundle_8310_004_Aql
+        execution:
+          onExecute:
+            - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
+            - Set-Content -Path S_PS_CreateReleaseBundle_8310_004.txt -Value ${run_id}
+            - jfrog rt upload S_PS_CreateReleaseBundle_8310_004.txt test-automation-generic-local --insecure-tls=$no_verify_ssl
+
+      - name: S_PS_CreateReleaseBundle_8310_004_2
+        type: CreateReleaseBundle
+        configuration:
+          releaseBundleName: ${JFROG_CLI_BUILD_NAME}
+          releaseBundleVersion: ${run_id}
+          dryRun: false
+          inputResources:
+            - name: S_PS_CreateReleaseBundle_8310_004_Aql
+          outputResources:
+            - name: S_PS_CreateReleaseBundle_8310_004_ReleaseBundle
+
+      - name: S_PS_CreateReleaseBundle_8310_004_3
+        type: PowerShell
+        configuration:
+          inputResources:
+            - name: S_PS_CreateReleaseBundle_8310_004_ReleaseBundle
+          integrations:
+            - name: s_artifactory
+            - name: s_distribution
+        execution:
+          onExecute:
+            - |
+              Write-Output "Deleting release bundle..."
+              jfrog config add distribution --overwrite --insecure-tls=$no_verify_ssl --distribution-url $int_s_distribution_url --user $int_s_distribution_user --password $int_s_distribution_apikey --interactive=false
+              jfrog config use distribution
+              $releaseBundleName = find_resource_variable S_PS_CreateReleaseBundle_8310_004_ReleaseBundle name
+              $releaseBundleVersion = find_resource_variable S_PS_CreateReleaseBundle_8310_004_ReleaseBundle version
+              jfrog ds release-bundle-delete --delete-from-dist=true --insecure-tls=$no_verify_ssl $releaseBundleName $releaseBundleVersion
+              jfrog config remove distribution
+            - |
+              Write-Output "Checking resource..."
+              if ( "$res_S_PS_CreateReleaseBundle_8310_004_ReleaseBundle_name" -ne "${JFROG_CLI_BUILD_NAME}" ) { throw "Wrong name" }
+              if ( "$res_S_PS_CreateReleaseBundle_8310_004_ReleaseBundle_version" -ne "${run_id}" ) { throw "Wrong version" }
+              if ( "$res_S_PS_CreateReleaseBundle_8310_004_ReleaseBundle_isSigned" -eq "true" ) {  throw "Wrong isSigned" }
