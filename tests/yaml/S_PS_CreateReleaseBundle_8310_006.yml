@@ -36,12 +36,10 @@ pipelines:
         execution:
           onExecute:
             - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
-            - |
-              $JFROG_CLI_BUILD_NAME = "S_PS_CreateReleaseBundle_8310_006_1"
-              Set-Content -Path S_PS_CreateReleaseBundle_8310_006_1.txt -Value ${run_id}
-              jfrog rt upload S_PS_CreateReleaseBundle_8310_006_1.txt test-automation-generic-local --insecure-tls=$no_verify_ssl
-              jfrog rt build-publish --insecure-tls=${no_verify_ssl} ${JFROG_CLI_BUILD_NAME} ${JFROG_CLI_BUILD_NUMBER}
-              write_output S_PS_CreateReleaseBundle_8310_006_BuildInfo_1 buildName="${JFROG_CLI_BUILD_NAME}" buildNumber="${JFROG_CLI_BUILD_NUMBER}"
+            - Set-Content -Path S_PS_CreateReleaseBundle_8310_006_1.txt -Value ${run_id}
+            - jfrog rt upload S_PS_CreateReleaseBundle_8310_006_1.txt test-automation-generic-local --insecure-tls=$no_verify_ssl --build-name S_PS_CreateReleaseBundle_8310_006_1 --build-number ${run_id}
+            - jfrog rt build-publish --insecure-tls=${no_verify_ssl} S_PS_CreateReleaseBundle_8310_006_1 ${run_id}
+            - write_output S_PS_CreateReleaseBundle_8310_006_BuildInfo_1 buildName="S_PS_CreateReleaseBundle_8310_006_1" buildNumber="${run_id}"
 
       - name: S_PS_CreateReleaseBundle_8310_006_2
         type: PowerShell
@@ -54,12 +52,10 @@ pipelines:
             - name: S_PS_CreateReleaseBundle_8310_006_BuildInfo_2
         execution:
           onExecute:
-            - |
-              $JFROG_CLI_BUILD_NAME = "S_PS_CreateReleaseBundle_8310_006_2"
-              Set-Content -Path S_PS_CreateReleaseBundle_8310_006_2.txt -Value ${run_id}
-              jfrog rt upload S_PS_CreateReleaseBundle_8310_006_2.txt test-automation-generic-local --insecure-tls=$no_verify_ssl
-              jfrog rt build-publish --insecure-tls=${no_verify_ssl} ${JFROG_CLI_BUILD_NAME} ${JFROG_CLI_BUILD_NUMBER}
-              write_output S_PS_CreateReleaseBundle_8310_006_BuildInfo_2 buildName="${JFROG_CLI_BUILD_NAME}" buildNumber="${JFROG_CLI_BUILD_NUMBER}"
+            - Set-Content -Path S_PS_CreateReleaseBundle_8310_006_2.txt -Value ${run_id}
+            - jfrog rt upload S_PS_CreateReleaseBundle_8310_006_2.txt test-automation-generic-local --insecure-tls=$no_verify_ssl --build-name S_PS_CreateReleaseBundle_8310_006_2 --build-number ${run_id}
+            - jfrog rt build-publish --insecure-tls=${no_verify_ssl} S_PS_CreateReleaseBundle_6237_008_2 ${run_id}
+            - write_output S_PS_CreateReleaseBundle_8310_006_BuildInfo_2 buildName="S_PS_CreateReleaseBundle_8310_006_2" buildNumber="${run_id}"
 
       - name: S_PS_CreateReleaseBundle_8310_006_3
         type: CreateReleaseBundle
