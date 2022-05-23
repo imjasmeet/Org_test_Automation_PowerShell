@@ -2,55 +2,58 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_HelmPublish_6191_002_GitRepo
+  - name: S_PS_HelmPublish_8309_002_GitRepo
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
       path: {{ .Values.GitHub.Org_test_Automation_PowerShell.path }}
       branches:
         include: {{gitBranch}}
-  - name: S_PS_HelmPublish_6191_002_HelmChart
+  - name: S_PS_HelmPublish_8309_002_HelmChart
     type: HelmChart
     configuration:
       sourceArtifactory: s_artifactory
       repository: test-automation-helm-local
       version: version
       chart: chart
-  - name: S_PS_HelmPublish_6191_002_BuildInfo
+  - name: S_PS_HelmPublish_8309_002_BuildInfo
     type: BuildInfo
     configuration:
       sourceArtifactory: s_artifactory
 
 pipelines:
-  - name: pipeline_S_PS_HelmPublish_6191_002
+  - name: pipeline_S_PS_HelmPublish_8309_002
     configuration:
+      jfrogCliVersion: 2
       nodePool: win_2019
       environmentVariables:
         readOnly:
-          CHART_VERSION: v1.6191002.${run_id}
+          CHART_VERSION: v1.8309002.${run_id}
     steps:
-      - name: S_PS_HelmPublish_6191_002_1
+      - name: S_PS_HelmPublish_8309_002_1
         type: HelmPublish
         configuration:
           chartPath: "./tests/helmCharts/myChart"
-          flags: "--version ${CHART_VERSION}"
           autoPublishBuildInfo: true
+          flags: "--version ${CHART_VERSION}"
           inputResources:
-            - name: S_PS_HelmPublish_6191_002_GitRepo
+            - name: S_PS_HelmPublish_8309_002_GitRepo
           outputResources:
-            - name: S_PS_HelmPublish_6191_002_BuildInfo
-            - name: S_PS_HelmPublish_6191_002_HelmChart
+            - name: S_PS_HelmPublish_8309_002_BuildInfo
+            - name: S_PS_HelmPublish_8309_002_HelmChart
           integrations:
             - name: s_artifactory
         execution:
           onStart:
             - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
-            - replace_envs ${res_S_PS_HelmPublish_6191_002_GitRepo_resourcePath}/tests/helmCharts/myChart/Chart.yaml
-      - name: S_PS_HelmPublish_6191_002_2
+            - replace_envs ${res_S_PS_HelmPublish_8309_002_GitRepo_resourcePath}/tests/helmCharts/myChart/Chart.yaml
+      - name: S_PS_HelmPublish_8309_002_2
         type: PowerShell
         configuration:
           inputSteps:
-            - name: S_PS_HelmPublish_6191_002_1
+            - name: S_PS_HelmPublish_8309_002_1
+          inputResources:
+            - name: S_PS_HelmPublish_8309_002_BuildInfo
           integrations:
             - name: s_artifactory
         execution:
@@ -65,3 +68,5 @@ pipelines:
               $stepArtifact = Invoke-RestMethod -Method Get -ContentType 'application/json' -Headers $headers -Uri "${pipelines_api_url}/stepArtifacts?artifactPath=${artifactPath}&artifactSha=${artifactSha}&artifactType=buildInfo" -UseBasicParsing
               jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${run_id}&artifacts=1"
               if ( $stepArtifact.artifactSha -ne $artifactSha ) { throw "SHA doesn't match" }
+              if ( $res_S_PS_HelmPublish_8309_002_BuildInfo_buildName -ne $JFROG_CLI_BUILD_NAME ) { throw "Wrong buildName in BuildInfo" }
+              if ( $res_S_PS_HelmPublish_8309_002_BuildInfo_buildNumber -ne $JFROG_CLI_BUILD_NUMBER ) { throw "Wrong buildNumber in BuildInfo" }

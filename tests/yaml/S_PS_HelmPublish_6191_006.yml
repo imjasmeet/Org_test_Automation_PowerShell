@@ -26,7 +26,7 @@ pipelines:
         type: HelmPublish
         configuration:
           environmentVariables:
-            versionFlag: "0.0.1"
+            versionFlag: "v1.6191006.${run_id}"
           chartPath: "./tests/helmCharts/myChart"
           flags: "--version ${versionFlag}"
           inputResources:
@@ -38,6 +38,7 @@ pipelines:
         execution:
           onStart:
             - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
+            - replace_envs ${res_S_PS_HelmPublish_6191_006_GitRepo_resourcePath}/tests/helmCharts/myChart/Chart.yaml
       - name: S_PS_HelmPublish_6191_006_2
         type: PowerShell
         configuration:
@@ -45,4 +46,4 @@ pipelines:
             - name: S_PS_HelmPublish_6191_006_HelmChart
         execution:
           onExecute:
-            - if ( "$res_S_PS_HelmPublish_6191_006_HelmChart_version" -ne "0.0.1" ) { throw "Wrong version" }
+            - if ( "$res_S_PS_HelmPublish_6191_006_HelmChart_version" -ne "v1.6191006.${run_id}" ) { throw "Wrong version" }

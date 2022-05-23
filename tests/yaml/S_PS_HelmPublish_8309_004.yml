@@ -2,14 +2,14 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_HelmPublish_6191_009_GitRepo
+  - name: S_PS_HelmPublish_8309_004_GitRepo
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
       path: {{ .Values.GitHub.Org_test_Automation_PowerShell.path }}
       branches:
         include: {{gitBranch}}
-  - name: S_PS_HelmPublish_6191_009_HelmChart
+  - name: S_PS_HelmPublish_8309_004_HelmChart
     type: HelmChart
     configuration:
       sourceArtifactory: s_artifactory
@@ -18,26 +18,28 @@ resources:
       chart: chart
 
 pipelines:
-  - name: pipeline_S_PS_HelmPublish_6191_009
+  - name: pipeline_S_PS_HelmPublish_8309_004
     configuration:
+      jfrogCliVersion: 2
       nodePool: win_2019
       environmentVariables:
         readOnly:
-          CHART_VERSION: v1.6191009.${run_id}
+          CHART_VERSION: v1.8309004.${run_id}
     steps:
-      - name: S_PS_HelmPublish_6191_009_1
+      - name: S_PS_HelmPublish_8309_004_1
         type: HelmPublish
         configuration:
-          chartPath: "tests/helmCharts/myChart"
-          lint: true
-          lintFlags: "--set-string key1=val1"
+          environmentVariables:
+            chartDirectory: "tests/helmCharts"
+          chartPath: "./${chartDirectory}/myChart"
           flags: "--version ${CHART_VERSION}"
           inputResources:
-            - name: S_PS_HelmPublish_6191_009_GitRepo
+            - name: S_PS_HelmPublish_8309_004_GitRepo
           outputResources:
-            - name: S_PS_HelmPublish_6191_009_HelmChart
+            - name: S_PS_HelmPublish_8309_004_HelmChart
           integrations:
             - name: s_artifactory
         execution:
           onStart:
-            - replace_envs ${res_S_PS_HelmPublish_6191_009_GitRepo_resourcePath}/tests/helmCharts/myChart/Chart.yaml
+            - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
+            - replace_envs ${res_S_PS_HelmPublish_8309_004_GitRepo_resourcePath}/tests/helmCharts/myChart/Chart.yaml
