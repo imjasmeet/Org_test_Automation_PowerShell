@@ -25,12 +25,16 @@ pipelines:
   - name: pipeline_S_PS_HelmPublish_6191_011
     configuration:
       nodePool: win_2019
+      environmentVariables:
+        readOnly:
+          CHART_VERSION: v1.6191011.${run_id}
     steps:
       - name: S_PS_HelmPublish_6191_011_1
         type: HelmPublish
         configuration:
           chartPath: "tests/helmCharts/myChart"
           autoPublishBuildInfo: true
+          flags: "--version ${CHART_VERSION}"
           inputResources:
             - name: S_PS_HelmPublish_6191_011_GitRepo
           outputResources:
@@ -41,6 +45,7 @@ pipelines:
         execution:
           onStart:
             - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
+            - replace_envs ${res_S_PS_HelmPublish_6191_011_GitRepo_resourcePath}/tests/helmCharts/myChart/Chart.yaml
       - name: S_PS_HelmPublish_6191_011_2
         type: PowerShell
         configuration:
