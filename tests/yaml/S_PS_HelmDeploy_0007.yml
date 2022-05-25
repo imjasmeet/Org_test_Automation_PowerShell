@@ -37,9 +37,10 @@ pipelines:
             - name: S_PS_HelmDeploy_BuildInfo_0007
         execution:
           onExecute:
+            - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
             - jfrog --version
-            - cd $res_S_PS_HelmDeploy_GitRepo_0007_resourcePath/tests/core/helmdeploy
-            - jfrog rt u simplehelm/ "helmgeneric/" --flat=false --build-name=$JFROG_CLI_BUILD_NAME --build-number=${JFROG_CLI_BUILD_NUMBER}
+            - Push-Location ${res_S_PS_HelmDeploy_GitRepo_0007_resource_resourcePath}/tests/core/helmdeploy
+            - jfrog rt u simplehelm/ "helmgeneric/S_HelmDeploy_0007/" --flat=false --build-name=${JFROG_CLI_BUILD_NAME} --build-number=${JFROG_CLI_BUILD_NUMBER}
             - jfrog rt bce ${JFROG_CLI_BUILD_NAME} ${JFROG_CLI_BUILD_NUMBER}
             - jfrog rt bp ${JFROG_CLI_BUILD_NAME} ${JFROG_CLI_BUILD_NUMBER}
             - write_output S_PS_HelmDeploy_BuildInfo_0007 buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${JFROG_CLI_BUILD_NUMBER}
@@ -64,4 +65,5 @@ pipelines:
           lintFlags: "--strict"
           test: true
         execution:
+          onComplete:
             - helm3 delete simplehelm-generic-$run_id --namespace $k8s_namespace

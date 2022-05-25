@@ -44,9 +44,10 @@ pipelines:
             - name: S_PS_HelmDeploy_BuildInfo_0010
         execution:
           onExecute:
+            - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
             - jfrog --version
             - cd $res_S_PS_HelmDeploy_GitRepo_0010_resourcePath/tests/core/helmdeploy
-            - jfrog rt u simplehelm-0.3.0.tgz "simplecharts/"
+            - jfrog rt u simplehelm-0.3.0.tgz "simplecharts/S_PS_HelmDeploy_0010/"
             - jfrog rt bce $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER
             - jfrog rt bp $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER
             - write_output S_PS_HelmDeploy_BuildInfo_0010 buildName=$JFROG_CLI_BUILD_NAME buildNumber=$JFROG_CLI_BUILD_NUMBER
@@ -75,7 +76,7 @@ pipelines:
             - name: S_PS_HelmDeploy_ReleaseBundle_0010
           helmVersion: 3
           releaseName: ${release_name_from_repo}
-          chartPath: simplecharts
+          chartPath: simplecharts/S_PS_HelmDeploy_0010
           chartName: simplehelm
           chartVersion: 0.3.0
           flags: "--force --wait --timeout 900s --set image.repository=trriplejay/simplehelm --set image.tag=latest"

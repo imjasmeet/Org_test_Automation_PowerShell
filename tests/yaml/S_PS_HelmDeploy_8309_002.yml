@@ -1,0 +1,40 @@
+resources:
+  - name: S_PS_HelmDeploy_FileSpec_8309_002_helm_res
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: >-
+        simplecharts/
+      recursive: true
+
+pipelines:
+  - name: S_PS_HelmDeploy_FileSpec_8309_002_helm
+    configuration:
+      jfrogCliVersion: 2
+      environmentVariables:
+        readOnly:
+          release_name_from_helm_repo: "simplehelm-from-repo-${run_id}"
+          k8s_namespace: "pipe-master-pool"
+      nodePool: win_2019
+    steps:
+      - name: S_PS_HelmDeploy_8309_002
+        type: HelmDeploy
+        configuration:
+          integrations:
+            - name: s_kubernetes
+          inputResources:
+            - name: S_PS_HelmDeploy_FileSpec_8309_002_helm_res
+          helmVersion: 3
+          releaseName: ${release_name_from_helm_repo}
+          chartPath: ./
+          chartName: simplehelm
+          chartVersion: 0.3.0
+          flags: "--wait --timeout 900s -n ${k8s_namespace} --set image.repository=trriplejay/simplehelm --set image.tag=latest"
+          valueFilePaths:
+            - values.yaml
+          lint: true
+          lintFlags: "--strict"
+          test: true
+        execution:
+          onComplete:
+            - helm3 delete simplehelm-from-repo-$run_id --namespace $k8s_namespace

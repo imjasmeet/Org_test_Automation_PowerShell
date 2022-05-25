@@ -37,13 +37,13 @@ pipelines:
             - name: S_PS_HelmDeploy_BuildInfo_0006
         execution:
           onExecute:
+            - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
             - jfrog --version
-            - cd $res_S_PS_HelmDeploy_GitRepo_0006_resourcePath/tests/core/helmdeploy
-            - jfrog rt u simplehelm-0.3.0.tgz "simplecharts/"
+            - Push-Location ${res_S_PS_HelmDeploy_GitRepo_0006_resourcePath}\tests\core\helmdeploy
+            - jfrog rt u simplehelm-0.3.0.tgz simplecharts/S_PS_HelmDeploy_0006/ --build-name=${JFROG_CLI_BUILD_NAME} --build-number=${JFROG_CLI_BUILD_NUMBER}
             - jfrog rt bce ${JFROG_CLI_BUILD_NAME} ${JFROG_CLI_BUILD_NUMBER}
             - jfrog rt bp ${JFROG_CLI_BUILD_NAME} ${JFROG_CLI_BUILD_NUMBER}
             - write_output S_PS_HelmDeploy_BuildInfo_0006 buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${JFROG_CLI_BUILD_NUMBER}
-          
 
       - name: deploy_helm_chart_from_helm_repo
         type: HelmDeploy
@@ -57,7 +57,7 @@ pipelines:
             - name: S_PS_HelmDeploy_BuildInfo_0006
           helmVersion: 3
           releaseName: ${release_name_from_repo}
-          chartPath: ./
+          chartPath: ./S_PS_HelmDeploy_0006
           chartName: simplehelm
           chartVersion: 0.3.0
           flags: "--force --wait --timeout 900s --set image.repository=trriplejay/simplehelm --set image.tag=latest"
@@ -69,3 +69,4 @@ pipelines:
         execution:
           onComplete:
             - helm3 delete simplehelm-from-repo-$run_id --namespace $k8s_namespace
+            - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${JFROG_CLI_BUILD_NUMBER}&artifacts=1"
