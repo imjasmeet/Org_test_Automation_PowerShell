@@ -49,8 +49,8 @@ pipelines:
         execution:
           onExecute:
             - jfrog --version
-            - cd $res_S_PS_HBGDeploy_5978_0005_git_resource_resourcePath/tests/core/helmbluegreen
-            - jfrog rt u simplehelm-0.3.0.tgz "simplecharts/" --build-name=$JFROG_CLI_BUILD_NAME --build-number=$run_id
+            - Push-Location ${res_S_PS_HBGDeploy_5978_0005_git_resource_resourcePath}/tests/core/helmbluegreen
+            - jfrog rt upload simplehelm-0.3.0.tgz simplecharts/S_PS_HBGDeploy_5978_0005/ --build-name=$JFROG_CLI_BUILD_NAME --build-number=$run_id
             - jfrog rt bce $JFROG_CLI_BUILD_NAME $run_id
             - jfrog rt bp $JFROG_CLI_BUILD_NAME $run_id
             - write_output S_PS_HBGDeploy_5978_0005_buildinfo_resource buildName=$JFROG_CLI_BUILD_NAME buildNumber=$run_id
@@ -77,7 +77,7 @@ pipelines:
             - name: s_kubernetes
           inputResources:
             - name: S_PS_HBGDeploy_5978_0005_releasebundle_resource
-          chartPath: simplecharts
+          chartPath: simplecharts/S_PS_HBGDeploy_5978_0005
           chartName: simplehelm
           chartVersion: 0.3.0
           namespace: ${k8s_namespace}
