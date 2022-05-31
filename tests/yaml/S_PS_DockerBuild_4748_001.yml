@@ -1,0 +1,71 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_PS_DockerBuild_4748_001_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_PowerShell.path }}
+      branches:
+        include: {{gitBranch}}
+
+  - name: S_PS_DockerBuild_4748_001_FileSpec_1
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: test-automation-generic-local/PS_DockerBuild_4748_001_Dockerfile
+
+  - name: S_PS_DockerBuild_4748_001_FileSpec_2
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: test-automation-generic-local/PS_DockerBuild_4748_001_mySecondFile
+
+pipelines:
+  - name: pipeline_S_PS_DockerBuild_4748_001
+    configuration:
+      nodePool: win_2019
+    steps:
+      - name: S_PS_DockerBuild_4748_001_1
+        type: PowerShell
+        configuration:
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            -  name: S_PS_DockerBuild_4748_001_FileSpec_1
+            -  name: S_PS_DockerBuild_4748_001_FileSpec_2
+        execution:
+          onExecute:
+            - |
+              $artifactory_url = [System.Uri]$int_s_artifactory_url
+              $artifactory_registry_host = $artifactory_url.Host
+              $artifactory_registry_port = $artifactory_url.Port
+              if (($artifactory_registry_port -eq 80) -or ($artifactory_registry_port -eq 443)) {
+                add_run_variables artifactory_registry_url="${artifactory_registry_host}"
+              } else {
+                add_run_variables artifactory_registry_url="${artifactory_registry_host}:${artifactory_registry_port}"
+              }
+            - Set-Content -Path Dockerfile -Value "FROM $(${step_image_name}):$(${step_image_tag})"
+            - Add-Content -Path Dockerfile -Value "ADD PS_DockerBuild_4748_001_mySecondFile c:\\temp\\"
+            - Set-Content -Path mySecondFile -Value "My Other File"
+            - jfrog rt upload Dockerfile test-automation-generic-local/PS_DockerBuild_4748_001_Dockerfile
+            - jfrog rt upload mySecondFile test-automation-generic-local/PS_DockerBuild_4748_001_mySecondFile
+
+      - name: S_PS_DockerBuild_4748_001_2
+        type: DockerBuild
+        configuration:
+          affinityGroup: S_PS_DockerBuild_4748_001
+          dockerImageName: ${artifactory_registry_url}/test-automation-docker-local/s_ps_dockerbuild_4748
+          dockerImageTag: "${run_id}"
+          dockerFileName: PS_DockerBuild_4748_001_Dockerfile
+          inputResources:
+            - name: S_PS_DockerBuild_4748_001_GitRepo
+            - name: S_PS_DockerBuild_4748_001_FileSpec_1
+            - name: S_PS_DockerBuild_4748_001_FileSpec_2
+          integrations:
+            - name: s_artifactory
+            - name: s_rt_dockerRegistry
+        execution:
+          onComplete:
+            - docker rmi "${artifactory_registry_url}/test-automation-docker-local/s_ps_dockerbuild_4748:${run_id}"
