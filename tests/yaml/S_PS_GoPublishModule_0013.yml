@@ -2,7 +2,7 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_GoPublishModule_0013_GitRepo
+  - name: S_PS_GPM_0013_GitRepo
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
@@ -24,7 +24,7 @@ pipelines:
         type: GoPublishModule
         configuration:
           inputResources:
-            - name: S_PS_GoPublishModule_0013_GitRepo
+            - name: S_PS_GPM_0013_GitRepo
           outputResources:
             - name: S_PS_GoPublishModule_0013_BuildInfo
           integrations:

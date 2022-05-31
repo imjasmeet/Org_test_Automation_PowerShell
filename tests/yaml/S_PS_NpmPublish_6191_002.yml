@@ -2,7 +2,7 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_NpmPublish_6191_002_GitRepo
+  - name: S_PS_NpmP_6191_002_GitRepo
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
@@ -25,13 +25,13 @@ pipelines:
           sourceLocation: "tests/npm"
           resolverRepo: "test-automation-npm-remote"
           inputResources:
-            - name: S_PS_NpmPublish_6191_002_GitRepo
+            - name: S_PS_NpmP_6191_002_GitRepo
           integrations:
             - name: s_artifactory
         execution:
           onStart:
             - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
-            - replace_envs ${res_S_PS_NpmPublish_6191_002_GitRepo_resourcePath}\tests\npm\package.json
+            - replace_envs ${res_S_PS_NpmP_6191_002_GitRepo_resourcePath}\tests\npm\package.json
       - name: S_PS_NpmPublish_6191_002_2
         type: NpmPublish
         configuration:
