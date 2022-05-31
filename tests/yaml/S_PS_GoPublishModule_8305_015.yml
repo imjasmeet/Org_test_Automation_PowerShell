@@ -2,7 +2,7 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_GoPublishModule_8305_015_GitRepo
+  - name: S_PS_GPM_8305_015_GitRepo
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
@@ -35,7 +35,7 @@ pipelines:
           outputResources:
             - name: S_PS_GoPublishModule_8305_015_buildInfo
           inputResources:
-            - name: S_PS_GoPublishModule_8305_015_GitRepo
+            - name: S_PS_GPM_8305_015_GitRepo
         execution:
           onComplete:
             - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${run_id}&artifacts=1"

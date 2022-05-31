@@ -2,7 +2,7 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_GoPublishBinary_8305_010_GitRepo
+  - name: S_PS_GPB_8305_010_GitRepo
     type: GitRepo
     configuration:
       gitProvider: second_s_gitHub
@@ -30,7 +30,7 @@ pipelines:
           integrations:
             - name: second_s_artifactory
           inputResources:
-            - name: S_PS_GoPublishBinary_8305_010_GitRepo
+            - name: S_PS_GPB_8305_010_GitRepo
       - name: S_PS_GoPublishBinary_8305_010_2
         type: GoPublishBinary
         configuration:

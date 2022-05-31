@@ -2,7 +2,7 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_GoPublishModule_8305_003_GitRepo
+  - name: S_PS_GPM_8305_003_GitRepo
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
@@ -28,12 +28,12 @@ pipelines:
           integrations:
             - name: s_artifactory
           inputResources:
-            - name: S_PS_GoPublishModule_8305_003_GitRepo
+            - name: S_PS_GPM_8305_003_GitRepo
           outputResources:
             -  name: S_PS_GoPublishModule_8305_003_FileSpec
         execution:
           onExecute:
-            - Set-Location (find_resource_variable S_PS_GoPublishModule_8305_003_GitRepo resourcePath)
+            - Set-Location (find_resource_variable S_PS_GPM_8305_003_GitRepo resourcePath)
             - Set-Location "tests\Go"
             - jfrog rt upload go.mod test-automation-generic-local/go.mod
 
@@ -41,7 +41,7 @@ pipelines:
         type: GoPublishModule
         configuration:
           inputResources:
-            - name: S_PS_GoPublishModule_8305_003_GitRepo
+            - name: S_PS_GPM_8305_003_GitRepo
             - name: S_PS_GoPublishModule_8305_003_FileSpec
           integrations:
             - name: s_artifactory

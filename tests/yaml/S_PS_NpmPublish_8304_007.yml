@@ -2,7 +2,7 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_NpmPublish_8304_007_GitRepo
+  - name: S_PS_NpmP_8304_007_GitRepo
     type: GitRepo
     configuration:
       gitProvider: second_s_gitHub
@@ -31,10 +31,10 @@ pipelines:
           integrations:
             - name: second_s_artifactory
           inputResources:
-            - name: S_PS_NpmPublish_8304_007_GitRepo
+            - name: S_PS_NpmP_8304_007_GitRepo
         execution:
           onStart:
-          - replace_envs ${res_S_PS_NpmPublish_8304_007_GitRepo_resourcePath}\tests\npm\package.json
+          - replace_envs ${res_S_PS_NpmP_8304_007_GitRepo_resourcePath}\tests\npm\package.json
       - name: S_PS_NpmPublish_8304_007_2
         type: NpmPublish
         configuration:

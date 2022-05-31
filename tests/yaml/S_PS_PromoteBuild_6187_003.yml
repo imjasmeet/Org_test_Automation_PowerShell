@@ -2,7 +2,7 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_PromoteBuild_6187_003_GitRepo
+  - name: S_PS_PB_6187_003_GitRepo
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
@@ -30,7 +30,7 @@ pipelines:
         configuration:
           nodePool: win_2019
           inputResources:
-            - name: S_PS_PromoteBuild_6187_003_GitRepo
+            - name: S_PS_PB_6187_003_GitRepo
           integrations:
             - name: s_artifactory
           sourceLocation: "tests/Go/HelloWorld"

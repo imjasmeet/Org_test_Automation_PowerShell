@@ -2,7 +2,7 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_GoPublishBinary_0008_GitRepo
+  - name: S_PS_GPB_0008_GitRepo
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
@@ -27,7 +27,7 @@ pipelines:
             JFROG_CLI_BUILD_NAME: S_PS_GoPublishBinary_0008_buildName
             JFROG_CLI_BUILD_NUMBER: ${run_id}
           inputResources:
-            - name: S_PS_GoPublishBinary_0008_GitRepo
+            - name: S_PS_GPB_0008_GitRepo
           integrations:
             - name: s_artifactory
           sourceLocation: "tests/Go/HelloWorld"

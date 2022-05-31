@@ -2,7 +2,7 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_GoPublishBinary_0004_GitRepo
+  - name: S_GPB_0004_GitRepo
     type: GitRepo
     configuration:
       gitProvider: s_gitHub

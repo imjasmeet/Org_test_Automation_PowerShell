@@ -2,7 +2,7 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_PromoteBuild_6187_004_GitRepo
+  - name: S_PS_PB_6187_004_GitRepo
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
@@ -31,7 +31,7 @@ pipelines:
         type: GoBuild
         configuration:
           inputResources:
-            - name: S_PS_PromoteBuild_6187_004_GitRepo
+            - name: S_PS_PB_6187_004_GitRepo
           integrations:
             - name: s_artifactory
           sourceLocation: "tests/Go/HelloWorld"
@@ -56,11 +56,11 @@ pipelines:
           inputSteps:
             - name: S_PS_PromoteBuild_6187_004_2
           inputResources:
-            - name: S_PS_PromoteBuild_6187_004_GitRepo
+            - name: S_PS_PB_6187_004_GitRepo
         execution:
           onExecute:
             # Can't edit the buildinfo.json, so it has to be the signature.
-            - | 
+            - |
               $head_sig_path = (jfrog rt s artifactory-pipe-info/pipeline_S_PS_PromoteBuild_6187_004/{{gitBranch}}/$run_number/s-S_PS_PromoteBuild_6187_004_2.json.sig | ConvertFrom-Json)[0].path
               Write-Output $head_sig_path
               if ([string]::IsNullOrEmpty("$head_sig_path")) {
@@ -70,7 +70,7 @@ pipelines:
                 Write-Output "s-S_PS_PromoteBuild_6187_004_2.json.sig not found"
                 exit 1
               }
-              jfrog rt upload $res_S_PS_PromoteBuild_6187_004_GitRepo_resourcePath/tests/artifacts/invalidGPGSig $head_sig_path --quiet
+              jfrog rt upload $res_S_PS_PB_6187_004_GitRepo_resourcePath/tests/artifacts/invalidGPGSig $head_sig_path --quiet
       - name: S_PS_PromoteBuild_6187_004_4
         type: PromoteBuild
         configuration:
