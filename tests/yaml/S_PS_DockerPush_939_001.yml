@@ -1,0 +1,70 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_PS_DockerPush_939_001_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_PowerShell.path }}
+      branches:
+        include: {{gitBranch}}
+
+pipelines:
+  - name: pipeline_S_PS_DockerPush_939_001
+    configuration:
+      nodePool: win_2019
+      affinityGroup: S_PS_DockerPush_939_001
+      jfrogCliVersion: 2
+    steps:
+      - name: S_PS_DockerPush_939_001_1
+        type: DockerBuild
+        configuration:
+          dockerImageName: ${artifactory_registry_url}/test-automation-docker-local/s_ps_dockerpush_939
+          dockerImageTag: ${run_id}
+          inputResources:
+            - name: S_PS_DockerPush_939_001_GitRepo
+          integrations:
+            - name: s_artifactory
+        execution:
+          onStart:
+            - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
+            - |
+              $artifactory_url = [System.Uri]$int_s_artifactory_url
+              $artifactory_registry_host = $artifactory_url.Host
+              $artifactory_registry_port = $artifactory_url.Port
+              if (($artifactory_registry_port -eq 80) -or ($artifactory_registry_port -eq 443)) {
+                add_run_variables artifactory_registry_url="${artifactory_registry_host}"
+              } else {
+                add_run_variables artifactory_registry_url="${artifactory_registry_host}:${artifactory_registry_port}"
+              }
+            - Push-Location $res_S_PS_DockerPush_939_001_GitRepo_resourcePath
+            - Set-Content -Path Dockerfile -Value "FROM mcr.microsoft.com/powershell:7.2.2-nanoserver-1809"
+      - name: S_PS_DockerPush_939_001_2
+        type: PowerShell
+        configuration:
+          inputSteps:
+            - name: S_PS_DockerPush_939_001_1
+        execution:
+          onExecute:
+            - Write-Output "testing..."
+      - name: S_PS_DockerPush_939_001_3
+        type: DockerPush
+        configuration:
+          targetRepository: test-automation-docker-local
+          inputSteps:
+            - name: S_PS_DockerPush_939_001_2
+          integrations:
+            - name: s_artifactory
+      - name: S_PS_DockerPush_939_001_4
+        type: PowerShell
+        configuration:
+          inputSteps:
+            - name: S_PS_DockerPush_939_001_3
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - "docker rmi ${artifactory_registry_url}/test-automation-docker-local/s_ps_dockerpush_939:${run_id}"
+            - "jfrog rt docker-pull ${artifactory_registry_url}/test-automation-docker-local/s_ps_dockerpush_939:${run_id} test-automation-docker-local"
+            - docker rmi "${artifactory_registry_url}/test-automation-docker-local/s_ps_dockerpush_939:${run_id}"
