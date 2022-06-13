@@ -25,7 +25,7 @@ pipelines:
           CHART_VERSION: v0.8138001.${run_id}
       nodePool: win_2019
     steps:
-      - name: S_PS_HelmPublish_8138_001_1
+      - name: S_PS_HelmPublish_8138_001
         type: HelmPublish
         configuration:
           chartPath: "./tests/helmCharts/simplehelmdeployps"
