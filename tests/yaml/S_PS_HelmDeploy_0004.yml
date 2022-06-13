@@ -19,8 +19,6 @@ pipelines:
       - name: S_PS_HelmDeploy_0004
         type: HelmDeploy
         configuration:
-          inputSteps:
-            - name: trigger_pipeline_S_PS_HelmDeploy_0004
           integrations:
             - name: s_kubernetes
           inputResources:
