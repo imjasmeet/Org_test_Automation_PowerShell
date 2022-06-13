@@ -6,9 +6,9 @@ resources:
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
-      path: {{ .Values.GitHub.Org_test_Automation.path }}
+      path: {{ .Values.GitHub.Org_test_Automation_PowerShell.path }}
       branches:
-        include: {{gitBranch}}
+        include: ^{{gitBranch}}$
   - name: S_PS_HelmPublish_8138_001_HelmChart
     type: HelmChart
     configuration:
@@ -16,24 +16,24 @@ resources:
       repository: test-automation-helm-local
       version: version
       chart: chart
-  - name: S_PS_HelmPublish_8138_001_BuildInfo
-    type: BuildInfo
-    configuration:
-      sourceArtifactory: s_artifactory
 
 pipelines:
-  - name: pipeline_S_PS_HelmPublish_8138_001
+  - name: S_PS_HelmPublish_8138_001
     configuration:
+      environmentVariables:
+        readOnly:
+          CHART_VERSION: v0.8138001.${run_id}
       nodePool: win_2019
     steps:
-      - name: S_PS_HelmPublish_8138_001
+      - name: S_PS_HelmPublish_8138_001_1
         type: HelmPublish
         configuration:
-          chartPath: "./tests/core/helmdeploy/simplehelm"
+          chartPath: "./tests/helmCharts/simplehelmdeployps"
+          flags: "--version ${CHART_VERSION}"
           helmVersion: 3
           lint: true
           valueFilePaths:
-            - ${res_S_PS_HelmPublish_8138_001_GitRepo_resourcePath}\tests\core\helmdeploy\simplehelm\values.yaml
+            - ${res_S_PS_HelmPublish_8138_001_GitRepo_resourcePath}\tests\helmCharts\simplehelmdeployps\values.yaml
           inputResources:
             - name: S_PS_HelmPublish_8138_001_GitRepo
           outputResources:
@@ -43,3 +43,4 @@ pipelines:
         execution:
           onStart:
             - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
+            - replace_envs ${res_S_PS_HelmPublish_8138_001_GitRepo_resourcePath}/tests/helmCharts/simplehelmdeployps/Chart.yaml
