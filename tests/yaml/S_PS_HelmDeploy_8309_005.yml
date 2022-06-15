@@ -47,7 +47,7 @@ pipelines:
           onExecute:
             - add_run_variables JFROG_CLI_BUILD_NUMBER=${run_id}
             - Push-Location ${res_S_PS_HelmDeploy_8309_005_GitRepo_resourcePath}/tests/core/helmdeploy
-            - jfrog rt u simplehelm/ "helmgeneric/S_PS_HelmDeploy_8309_005/" --flat=true --build-name=$JFROG_CLI_BUILD_NAME --build-number=$JFROG_CLI_BUILD_NUMBER
+            - jfrog rt u simplehelm/ "helmgeneric/S_PS_HelmDeploy_8309_005/simplehelm/" --flat=true --build-name=$JFROG_CLI_BUILD_NAME --build-number=$JFROG_CLI_BUILD_NUMBER
             - jfrog rt bce $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER
             - jfrog rt bp $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER
             - write_output S_PS_HelmDeploy_8309_005_BuildInfo buildName=$JFROG_CLI_BUILD_NAME buildNumber=$JFROG_CLI_BUILD_NUMBER
