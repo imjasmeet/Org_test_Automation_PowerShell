@@ -93,5 +93,5 @@ pipelines:
               $releaseBundleVersion = (find_resource_variable "S_PS_HelmDeploy_8309_005_ReleaseBundle" version)
               jfrog ds release-bundle-delete --delete-from-dist=true --insecure-tls=$no_verify_ssl $releaseBundleName $releaseBundleVersion
               jfrog config remove distribution
-            - try { helm3 delete simplehelm-from-repo-$run_id --namespace $k8s_namespace } catch {}
+            - try { helm3 delete simplehelm-generic-${run_id} --namespace $k8s_namespace } catch {}
             - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${JFROG_CLI_BUILD_NUMBER}&artifacts=1"
