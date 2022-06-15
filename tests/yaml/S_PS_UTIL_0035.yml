@@ -5,10 +5,40 @@ pipelines:
         type: PowerShell
         configuration:
           nodePool: win_2019
-          environmentVariables:
-            foo: "bar"
-
         execution:
           onExecute:
-            - add_run_variables "scm=gitRepo"
-            - export_run_variables "windows=poweshell"
+            - add_run_variables "test=step1"
+
+      - name: S_PS_UTIL_0035_2
+        type: PowerShell
+        configuration:
+          nodePool: win_2019
+        execution:
+          onExecute:
+            - export_run_variables
+            - if($test -ne "step1"){
+              Write-Error "Stop" -ErrorAction Stop
+              }
+            - add_run_variables "test=fromStep2" 'step2="addedOneMoreVariable."' 
+            - Write-Host test=${test} step2={step2}
+            - if($test -ne "fromStep2"){
+              Write-Error "Stop" -ErrorAction Stop
+              }
+            - if($step2 -ne "addedOneMoreVariable."){
+              Write-Error "Stop" -ErrorAction Stop
+              }
+
+      - name: S_PS_UTIL_0035_3
+        type: PowerShell
+        configuration:
+          nodePool: win_2019
+        execution:
+          onExecute:
+            - export_run_variables
+            - Write-Host test=${test} step2={step2}
+            - if($test -ne "fromStep2"){
+              Write-Error "Stop" -ErrorAction Stop
+              }
+            - if($step2 -ne "addedOneMoreVariable."){
+              Write-Error "Stop" -ErrorAction Stop
+              }

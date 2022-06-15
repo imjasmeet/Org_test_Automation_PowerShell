@@ -1,29 +1,30 @@
 template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
-resources:
-  - name: S_PS_UTIL_0039
-    type: GitRepo
-    configuration:
-      gitProvider: s_gitHub
-      path: {{ .Values.GitHub.Org_test_Automation.path }}
-
 pipelines:
-  - name: pipeline_S_PS_UTIL_0039
+  - name: S_PS_UTIL_0039_pipeline
+    configuration:
+      nodePool: win_2019
     steps:
       - name: S_PS_UTIL_0039
         type: PowerShell
-        configuration:
-          nodePool: win_2019
-          # outputResources:
-          #   - name: outgoing
-          inputResources:
-            - name: S_PS_UTIL_0039
-
         execution:
           onExecute:
-            - get-childitem $run_dir\workspace
-            - get-childitem $res_S_PS_UTIL_0039_resourcePath
+            - Set-Content -Path "my_run.env" -Value ${run_id}
+            - Set-Content -Path "my_run2.env" -Value ${run_id}
+            - add_run_files my_run.env my_run.env
+            - add_run_files my_run2.env my_run2.env
 
-            # runs
-            - add_run_files -sources "$res_S_PS_UTIL_0039_resourcePath" -name S_PS_UTIL
+      - name: S_PS_UTIL_0039_2
+        type: PowerShell
+        configuration:
+          inputSteps:
+            - name: S_PS_UTIL_0039
+        execution:
+          onExecute:
+            - restore_run_files my_run.env my_run.env
+            - restore_run_files my_run2.env my_run2.env
+            - if (-not (Test-Path my_run.env)) { throw "File missing" }
+            - if (-not (Test-Path my_run2.env)) { throw "File missing" }
+            - if ( (Get-Content -Path "my_run.env") -ne "$run_id" ) { throw "File contents not as expected" }
+            - if ( (Get-Content -Path "my_run2.env") -ne "$run_id" ) { throw "File contents not as expected" }
