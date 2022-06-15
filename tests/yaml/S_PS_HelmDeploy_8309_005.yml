@@ -79,7 +79,6 @@ pipelines:
           valueFilePaths:
             - values.yaml
           lint: true
-          lintFlags: "--quiet"
           test: true
         execution:
           onComplete:
