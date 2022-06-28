@@ -12,6 +12,8 @@ pipelines:
       - name: S_PS_UTIL_0035_2
         type: PowerShell
         configuration:
+          inputSteps:
+            - name: S_PS_UTIL_0035
           nodePool: win_2019
         execution:
           onExecute:
@@ -31,6 +33,8 @@ pipelines:
       - name: S_PS_UTIL_0035_3
         type: PowerShell
         configuration:
+          inputSteps:
+            - name: S_PS_UTIL_0035_2
           nodePool: win_2019
         execution:
           onExecute:
