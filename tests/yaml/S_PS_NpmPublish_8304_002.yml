@@ -47,12 +47,15 @@ pipelines:
       - name: S_PS_NpmPublish_8304_002_3
         type: PowerShell
         configuration:
-          inputSteps:
-            - name: S_PS_NpmPublish_8304_002_2
+          inputResources:
+            - name: S_PS_NpmPublish_8304_002_BuildInfo
           integrations:
             - name: s_artifactory
         execution:
           onExecute:
+            - jfrog rt curl -XGET /api/build/${JFROG_CLI_BUILD_NAME}/${JFROG_CLI_BUILD_NUMBER} -o ${step_tmp_dir}/response
+            - if ( "$res_S_PS_NpmPublish_8304_002_BuildInfo_buildName" -ne "${JFROG_CLI_BUILD_NAME}" ) { throw "Wrong build name" }
+            - if ( "$res_S_PS_NpmPublish_8304_002_BuildInfo_buildNumber" -ne "${JFROG_CLI_BUILD_NUMBER}" ) { throw "Wrong build number" }
             - |
               $buildInfoFilePath = (jfrog rt search "*/${JFROG_CLI_BUILD_NAME}/${run_id}*.json" | ConvertFrom-JSON)[0].path
               $artifactSha = (jfrog rt curl -XGET /api/storage/${buildInfoFilePath} | ConvertFrom-JSON).checksums.sha256
