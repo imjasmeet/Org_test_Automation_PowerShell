@@ -16,6 +16,8 @@ resources:
 
 pipelines:
   - name: S_PS_NpmPublish_6679_002
+    configuration:
+      jfrogCliVersion: 2
     steps:
       - name: S_PS_NpmPublish_6679_002_1
         type: NpmBuild
