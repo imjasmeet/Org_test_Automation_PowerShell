@@ -111,3 +111,4 @@ pipelines:
                 Write-Output "Distribution returned $statusCode"
               }
             - try { helm3 delete simplehelm-from-repo-$run_id --namespace $k8s_namespace } catch {}
+            - try { kubectl delete pod --namespace ${k8s_namespace} simplehelm-from-repo-$run_id-test-connection } catch {}

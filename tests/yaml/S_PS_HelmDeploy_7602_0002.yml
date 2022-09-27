@@ -66,3 +66,4 @@ pipelines:
         execution:
           onComplete:
             - helm3 delete s-ps-helmdeploy-7602-0002-$run_id --namespace ${k8s_namespace}
+            - kubectl delete pod --namespace ${k8s_namespace} s-ps-helmdeploy-7602-0002-$run_id-simplehelmdeployps-test-connection

@@ -69,3 +69,4 @@ pipelines:
           onComplete:
             - helm3 delete simplehelm-generic-$run_id --namespace $k8s_namespace
             - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${run_id}&artifacts=1"
+            - kubectl delete pod --namespace ${k8s_namespace} simplehelm-generic-$run_id-test-connection
