@@ -67,3 +67,4 @@ pipelines:
         execution:
           onComplete:
             - helm3 delete simplehelm-generic-$run_id --namespace $k8s_namespace
+            - kubectl delete pod --namespace ${k8s_namespace} simplehelm-generic-$run_id-test-connection
