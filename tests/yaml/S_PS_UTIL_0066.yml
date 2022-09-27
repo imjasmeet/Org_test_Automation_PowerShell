@@ -1,13 +1,3 @@
-template: true
-valuesFilePath: ../values/gitRepoValues.yml
-
-resources:
-  - name: S_PS_UTIL_0066
-    type: GitRepo
-    configuration:
-      gitProvider: s_gitHub
-      path: {{ .Values.GitHub.Org_test_Automation.path }}
-
 pipelines:
   - name: pipeline_S_PS_UTIL_0066
     steps:
@@ -15,22 +5,7 @@ pipelines:
         type: PowerShell
         configuration:
           nodePool: win_2019
-          inputResources:
-            - name: S_PS_UTIL_0066
-
         execution:
           onExecute:
-            - get-childitem $res_S_PS_UTIL_0066_resourcePath
-            - python -m pip install --upgrade pip
-            - python --version
-            - pip install pytest
-            - pip --version
-            - pytest --version
-            - Push-Location $res_S_PS_UTIL_0066_resourcePath
-            - get-childitem $res_S_PS_UTIL_0066_resourcePath
-            - get-childitem tests/core/sampleExecutionFile
-            #- pytest tests/test_sample.py
-            - py.test --verbose --junit-xml test-reports/results.xml tests/core/sampleExecutionFile/test_sample.py
-
-            - Get-Content -Path test-reports/results.xml
-            - save_tests $res_S_PS_UTIL_0066_resourcePath
+            - New-Item -Path "." -Name "EmptyDirectory" -ItemType Directory
+            - save_tests EmptyDirectory

@@ -1,13 +1,3 @@
-template: true
-valuesFilePath: ../values/gitRepoValues.yml
-
-resources:
-  - name: S_PS_UTIL_0069
-    type: GitRepo
-    configuration:
-      gitProvider: s_gitHub
-      path: {{ .Values.GitHub.Org_test_Automation.path }}
-
 pipelines:
   - name: pipeline_S_PS_UTIL_0069
     steps:
@@ -15,25 +5,8 @@ pipelines:
         type: PowerShell
         configuration:
           nodePool: win_2019
-          # outputResources:
-          #   - name: outgoing
-          inputResources:
-            - name: S_PS_UTIL_0069
-
         execution:
           onExecute:
-            - get-childitem $res_S_PS_UTIL_0069_resourcePath
-            - choco install python3
-            - python --version
-            - python -m pip install --upgrade pip
-            - pip --version
-            - pip install pytest
-            - pytest --version
-            - Push-Location $res_S_PS_UTIL_0069_resourcePath
-            - get-childitem $res_S_PS_UTIL_0069_resourcePath
-            # - get-childitem tests/core/sampleExecutionFile
-            #- pytest tests/test_sample.py
-            # - py.test --verbose --junit-xml test-reports/results.xml tests/core/sampleExecutionFile/test_sample.py
-
-            # - Get-Content -Path test-reports/results.xml
-            - save_tests $res_S_PS_UTIL_0069_resourcePath/tests
+            - New-Item -Path "." -Name "MyDirectory" -ItemType Directory
+            - New-Item -Path "MyDirectory/test.json" -Force -ItemType File
+            - save_tests MyDirectory
