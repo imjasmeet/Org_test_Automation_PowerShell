@@ -1,0 +1,77 @@
+
+pipelines:
+  - name: S_PS_Tasks_10148_03_pipeline
+    configuration:
+      nodePool: win_2019
+    steps:
+      - name: S_PS_Tasks_10148_03_step
+        type: PowerShell
+        execution:
+          onStart:
+            - Write-Output "on Start"
+            - |
+                $result = Get-Variable -ValueOnly -Name JFROG_TASK_WORKSPACE_DIR
+                if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_TASK_WORKSPACE_DIR not defined" }
+            - |
+                $result = Get-Variable -ValueOnly -Name JFROG_POST_HOOKS_DIR
+                if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_POST_HOOKS_DIR not defined" }
+            - |
+                $result = Get-Variable -ValueOnly -Name JFROG_PIPE_CLI_PATH
+                if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_PIPE_CLI_PATH not defined" }
+            - |
+                $result = Get-Variable -ValueOnly -Name JFROG_SCRIPT_EXTENSION
+                if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_SCRIPT_EXTENSION not defined" }
+            - |
+                $result = Get-Variable -ValueOnly -Name JFROG_DEFAULT_TASK_REPO
+                if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_DEFAULT_TASK_REPO not defined" }
+            - |
+                $result = Get-Variable -ValueOnly -Name JFROG_OPERATING_SYSTEM
+                if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_OPERATING_SYSTEM not defined" }
+            - |
+                $result = Get-Variable -ValueOnly -Name JFROG_STEP_TMP_DIR
+                if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_STEP_TMP_DIR not defined" }
+            - |
+                $result = Get-Variable -ValueOnly -Name JFROG_STEP_WORKSPACE_DIR
+                if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_STEP_WORKSPACE_DIR not defined" }
+            - |
+                $result = Get-Variable -ValueOnly -Name JFROG_SHARED_WORKSPACE_DIR
+                if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_SHARED_WORKSPACE_DIR not defined" }
+            - |
+                $result = Get-Variable -ValueOnly -Name JFROG_BUILDER_API_TOKEN
+                if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_BUILDER_API_TOKEN not defined" }
+            - |
+                $result = Get-Variable -ValueOnly -Name JFROG_PIPELINES_API_URL
+                if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_PIPELINES_API_URL not defined" }
+            - |
+                $result = Get-Variable -ValueOnly -Name JFROG_STEPLET_RUN_STATE_DIR
+                if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_STEPLET_RUN_STATE_DIR not defined" }
+            - |
+                $result = Get-Variable -ValueOnly -Name JFROG_RUN_VARIABLES_FILE
+                if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_RUN_VARIABLES_FILE not defined" }
+            - |
+                $result = Get-Variable -ValueOnly -Name JFROG_PIPELINE_WORKSPACE_DIR
+                if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_PIPELINE_WORKSPACE_DIR not defined" }
+            - |
+                $result = Get-Variable -ValueOnly -Name JFROG_STEPLET_WORKSPACE_DIR
+                if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_STEPLET_WORKSPACE_DIR not defined" }
+            - |
+                $result = Get-Variable -ValueOnly -Name JFROG_RUN_ID
+                if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_RUN_ID not defined" }
+            - |
+                $result = Get-Variable -ValueOnly -Name JFROG_RUN_NUMBER
+                if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_RUN_NUMBER not defined" }
+            - |
+                $result = Get-Variable -ValueOnly -Name JFROG_STEPLET_NUMBER
+                if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_STEPLET_NUMBER not defined" }
+            - |
+                $result = Get-Variable -ValueOnly -Name JFROG_PROJECT_NAME
+                if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_PROJECT_NAME not defined" }
+            - |
+                $result = Get-Variable -ValueOnly -Name JFROG_PROJECT_ID
+                if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_PROJECT_ID not defined" }
+          onExecute:
+            - Write-Output "on Execute"
+          onComplete:
+            - Write-Output "on Complete"
+          onSuccess:
+            - Write-Output "on Success"
