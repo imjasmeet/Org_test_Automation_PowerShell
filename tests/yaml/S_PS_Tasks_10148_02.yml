@@ -1,0 +1,51 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_PS_Tasks_10148_02_repo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_PowerShell.path }}
+      branches:
+        include: {{ gitBranch }}
+
+pipelines:
+  - name: S_PS_Tasks_10148_02_pipeline
+    configuration:
+      jfrogCliVersion: 2
+      nodePool: win_2019
+    steps:
+      - name: S_PS_Tasks_10148_02_step
+        type: PowerShell
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_PS_Tasks_10148_02_repo
+              trigger: false
+        execution:
+          onStart:
+            - Set-Variable -Name "taskVersion" -Scope "Global" -Value "v19.2.${run_id}"
+            - New-Item -Path "$step_tmp_dir/$taskVersion" -ItemType Container
+            - Copy-Item -Path "${res_S_PS_Tasks_10148_02_repo_resourcePath}/tests/tasks/hello/*" -Destination $step_tmp_dir/$taskVersion/ -Recurse -Force
+            - Push-Location $step_tmp_dir/
+            - jf rt u "$taskVersion/*" "test-automation-generic-local/jfrog/hello/$taskVersion.zip" --archive zip
+          onExecute:
+            - task: jfrog/hello@$taskVersion
+              repository: test-automation-generic-local
+              id: S_PS_Tasks_10148_02_task
+              input:
+                target: "execute"
+            - Write-Output "checking task OUT"
+            - if ( "$env:OUT_S_PS_Tasks_10148_02_task_message" -eq "" -or "$env:OUT_S_PS_Tasks_10148_02_task_message" -eq $null ) { throw "Error - task output not found" }
+            - Write-Output "checking path append"
+            - if ( "(Get-Command hello)" -eq "" -or "(Get-Command hello)" -eq $null ) { throw "Error - bin not available in path" }
+            - Write-Output "checking export"
+            - if ( "$env:HELLO_TOOL_PATH" -eq "" -or  "$env:HELLO_TOOL_PATH" -eq $null ) { throw "Error - export not available" }
+          onComplete:
+            - Write-Output "on Complete"
+            - try { jf rt del "test-automation-generic-local/jfrog/hello/$taskVersion.zip" } catch {}
+          onSuccess:
+            - Write-Output "on Complete"
+

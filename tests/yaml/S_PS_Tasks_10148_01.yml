@@ -1,0 +1,17 @@
+
+pipelines:
+  - name: S_PS_Tasks_10148_01_pipeline
+    configuration:
+      nodePool: win_2019
+    steps:
+      - name: S_PS_Tasks_10148_01_step
+        type: PowerShell
+        execution:
+          onStart:
+            - pipe --version
+          onExecute:
+            - pipe --version
+          onComplete:
+            - pipe --version
+          onSuccess:
+            - pipe --version
