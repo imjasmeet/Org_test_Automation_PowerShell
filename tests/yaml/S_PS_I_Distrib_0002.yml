@@ -10,15 +10,9 @@ pipelines:
         execution:
           onExecute:
             - write-output "executing step..."
-            - |
-              [ ! -z "$int_PSSI_Distribution_url" ]
-            - |
-              [ ! -z "$int_PSSI_Distribution_masterName" ]
-            - |
-              [ ! -z "$int_PSSI_Distribution_apikey" ]
-            - |
-              [ ! -z "$int_PSSI_Distribution_id" ]
-            - |
-              [ ! -z "$int_PSSI_Distribution_name" ]
-            - |
-              [ ! -z "$int_PSSI_Distribution_user" ]
+            - if ([string]::IsNullOrEmpty("$int_PSSI_Distribution_url")) { throw "Missing int_PSSI_Distribution_url" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_Distribution_masterName")) { throw "Missing int_PSSI_Distribution_masterName" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_Distribution_apikey")) { throw "Missing int_PSSI_Distribution_apikey" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_Distribution_id")) { throw "Missing int_PSSI_Distribution_id" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_Distribution_name")) { throw "Missing int_PSSI_Distribution_name" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_Distribution_user")) { throw "Missing int_PSSI_Distribution_user" }
