@@ -38,6 +38,8 @@ pipelines:
               input:
                 target: "execute"
                 testnum: 15
+                testbool: true
+                testnull:
           onComplete:
             - echo "on Complete"
             - try { jf rt del "test-automation-generic-local/jfrog/hello/${taskVersion}.zip" } catch {}
