@@ -28,6 +28,9 @@ pipelines:
                 $result = Get-Variable -ValueOnly -Name JFROG_OPERATING_SYSTEM
                 if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_OPERATING_SYSTEM not defined" }
             - |
+                $result = Get-Variable -ValueOnly -Name JFROG_OPERATING_SYSTEM_FAMILY
+                if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_OPERATING_SYSTEM_FAMILY not defined" }
+            - |
                 $result = Get-Variable -ValueOnly -Name JFROG_STEP_TMP_DIR
                 if (( $result -eq "" ) -or ( $result -eq $null )) { throw "Error: JFROG_STEP_TMP_DIR not defined" }
             - |
