@@ -5,10 +5,11 @@ pipelines:
       - name: S_PS_I_GitHubE_0001
         type: PowerShell
         configuration:
+          nodePool: win_2019
           integrations:
             - name: s_githubEnterprise
         execution:
           onStart:
-             - echo "Preparing for work..."
+            - echo "Preparing for work..."
           onExecute:
             - echo "executing step..."

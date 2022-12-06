@@ -11,15 +11,9 @@ pipelines:
         execution:
           onExecute:
             - write-output "executing step..."
-            - |
-              [ ! -z "$int_s_bitbucket_name" ]
-            - |
-              [ ! -z "$int_s_bitbucket_masterName" ]
-            - |
-              [ ! -z "$int_s_bitbucket_token" ]
-            - |
-              [ ! -z "$int_s_bitbucket_url" ]
-            - |
-              [ ! -z "$int_s_bitbucket_id" ]
-            - |
-              [ ! -z "$int_s_bitbucket_username" ]
+            - if ([string]::IsNullOrEmpty("$int_s_bitbucket_name")) { throw "Missing int_s_bitbucket_name" }
+            - if ([string]::IsNullOrEmpty("$int_s_bitbucket_masterName")) { throw "Missing int_s_bitbucket_masterName" }
+            - if ([string]::IsNullOrEmpty("$int_s_bitbucket_token")) { throw "Missing int_s_bitbucket_token" }
+            - if ([string]::IsNullOrEmpty("$int_s_bitbucket_url")) { throw "Missing int_s_bitbucket_url" }
+            - if ([string]::IsNullOrEmpty("$int_s_bitbucket_id")) { throw "Missing int_s_bitbucket_id" }
+            - if ([string]::IsNullOrEmpty("$int_s_bitbucket_username")) { throw "Missing int_s_bitbucket_username" }

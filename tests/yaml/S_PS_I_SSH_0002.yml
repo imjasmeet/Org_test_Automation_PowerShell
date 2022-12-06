@@ -4,18 +4,14 @@ pipelines:
       - name: S_PS_I_SSH_0002
         type: PowerShell
         configuration:
+          nodePool: win_2019
           integrations:
             - name: PSSI_SSHKEY
         execution:
           onExecute:
             - echo "executing step..."
-            - |
-              [ ! -z "$int_PSSI_SSHKEY_masterName" ]
-            - |
-              [ ! -z "$int_PSSI_SSHKEY_privateKey" ]
-            - |
-              [ ! -z "$int_PSSI_SSHKEY_publicKey" ]
-            - |
-              [ ! -z "$int_PSSI_SSHKEY_id" ]
-            - |
-              [ ! -z "$int_PSSI_SSHKEY_name" ]
+            - if ([string]::IsNullOrEmpty("$int_PSSI_SSHKEY_masterName")) { throw "Missing int_PSSI_SSHKEY_masterName" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_SSHKEY_privateKey")) { throw "Missing int_PSSI_SSHKEY_privateKey" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_SSHKEY_publicKey")) { throw "Missing int_PSSI_SSHKEY_publicKey" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_SSHKEY_id")) { throw "Missing int_PSSI_SSHKEY_id" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_SSHKEY_name")) { throw "Missing int_PSSI_SSHKEY_name" }

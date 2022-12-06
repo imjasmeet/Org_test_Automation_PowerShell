@@ -11,11 +11,7 @@ pipelines:
         execution:
           onExecute:
             - write-output "executing step..."
-            - |
-              [ ! -z "$int_PSSI_DigitalOcean_id"  ]
-            - |
-              [ ! -z "$int_PSSI_DigitalOcean_token"  ]
-            - |
-              [ ! -z "$int_PSSI_DigitalOcean_masterName"  ]
-            - |
-              [ ! -z "$int_PSSI_DigitalOcean_name"  ]
+            - if ([string]::IsNullOrEmpty("$int_PSSI_DigitalOcean_id")) { throw "Missing int_PSSI_DigitalOcean_id" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_DigitalOcean_token")) { throw "Missing int_PSSI_DigitalOcean_token" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_DigitalOcean_masterName")) { throw "Missing int_PSSI_DigitalOcean_masterName" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_DigitalOcean_name")) { throw "Missing int_PSSI_DigitalOcean_name" }

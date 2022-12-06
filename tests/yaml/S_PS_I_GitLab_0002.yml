@@ -10,13 +10,8 @@ pipelines:
         execution:
           onExecute:
             - write-output "executing step..."
-            - |
-              [ ! -z "$int_s_gitlab_id"  ]
-            - |
-              [ ! -z "$int_s_gitlab_url"  ]
-            - |
-              [ ! -z "$int_s_gitlab_masterName"  ]
-            - |
-              [ ! -z "$int_s_gitlab_token"  ]
-            - |
-              [ ! -z "$int_s_gitlab_name"  ]
+            - if ([string]::IsNullOrEmpty("$int_s_gitlab_id")) { throw "Missing int_s_gitlab_id" }
+            - if ([string]::IsNullOrEmpty("$int_s_gitlab_url")) { throw "Missing int_s_gitlab_url" }
+            - if ([string]::IsNullOrEmpty("$int_s_gitlab_masterName")) { throw "Missing int_s_gitlab_masterName" }
+            - if ([string]::IsNullOrEmpty("$int_s_gitlab_token")) { throw "Missing int_s_gitlab_token" }
+            - if ([string]::IsNullOrEmpty("$int_s_gitlab_name")) { throw "Missing int_s_gitlab_name" }

@@ -11,13 +11,8 @@ pipelines:
         execution:
           onExecute:
             - write-output "executing step..."
-            - |
-              [ ! -z "$int_PSSI_AirBrake_url" ]
-            - |
-              [ ! -z "$int_PSSI_AirBrake_masterName" ]
-            - |
-              [ ! -z "$int_PSSI_AirBrake_id" ]
-            - |
-              [ ! -z "$int_PSSI_AirBrake_name" ]
-            - |
-              [ ! -z "$int_PSSI_AirBrake_token" ]
+            - if ([string]::IsNullOrEmpty("$int_PSSI_AirBrake_url")) { throw "Missing int_PSSI_AirBrake_url" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_AirBrake_masterName")) { throw "Missing int_PSSI_AirBrake_masterName" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_AirBrake_id")) { throw "Missing int_PSSI_AirBrake_id" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_AirBrake_name")) { throw "Missing int_PSSI_AirBrake_name" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_AirBrake_token")) { throw "Missing int_PSSI_AirBrake_token" }

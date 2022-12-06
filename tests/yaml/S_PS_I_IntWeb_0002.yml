@@ -4,35 +4,23 @@ pipelines:
       - name: S_PS_I_IntWeb_0002
         type: PowerShell
         configuration:
+          nodePool: win_2019
           integrations:
             - name: PSSI_IW_BasicAuth
             - name: PSSI_IW_TokenAuth
         execution:
           onExecute:
             - echo "executing step..."
-            - |
-              [ ! -z "$int_PSSI_IW_TokenAuth_name"  ]
-            - |
-              [ ! -z "$int_PSSI_IW_TokenAuth_id"  ]
-            - |
-              [ ! -z "$int_PSSI_IW_TokenAuth_masterName"  ]
-            - |
-              [ ! -z "$int_PSSI_IW_TokenAuth_authType"  ]
-            - |
-              [ ! -z "$int_PSSI_IW_TokenAuth_authorization"  ]
-            - |
-              [ ! -z "$int_PSSI_IW_BasicAuth_secret"  ]
-            - |
-              [ ! -z "$int_PSSI_IW_BasicAuth_authType"  ]
-            - |
-              [ ! -z "$int_PSSI_IW_BasicAuth_masterName"  ]
-            - |
-              [ ! -z "$int_PSSI_IW_BasicAuth_username"  ]
-            - |
-              [ ! -z "$int_PSSI_IW_BasicAuth_name"  ]
-            - |
-              [ ! -z "$int_PSSI_IW_BasicAuth_password"  ]
-            - |
-              [ ! -z "$int_PSSI_IW_BasicAuth_id"  ]
-            - |
-              [ ! -z "$int_PSSI_IW_BasicAuth_authorization"  ]
+            - if ([string]::IsNullOrEmpty("$int_PSSI_IW_TokenAuth_name")) { throw "Missing int_PSSI_IW_TokenAuth_name" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_IW_TokenAuth_id")) { throw "Missing int_PSSI_IW_TokenAuth_id" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_IW_TokenAuth_masterName")) { throw "Missing int_PSSI_IW_TokenAuth_masterName" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_IW_TokenAuth_authType")) { throw "Missing int_PSSI_IW_TokenAuth_authType" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_IW_TokenAuth_authorization")) { throw "Missing int_PSSI_IW_TokenAuth_authorization" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_IW_BasicAuth_secret")) { throw "Missing int_PSSI_IW_BasicAuth_secret" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_IW_BasicAuth_authType")) { throw "Missing int_PSSI_IW_BasicAuth_authType" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_IW_BasicAuth_masterName")) { throw "Missing int_PSSI_IW_BasicAuth_masterName" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_IW_BasicAuth_username")) { throw "Missing int_PSSI_IW_BasicAuth_username" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_IW_BasicAuth_name")) { throw "Missing int_PSSI_IW_BasicAuth_name" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_IW_BasicAuth_password")) { throw "Missing int_PSSI_IW_BasicAuth_password" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_IW_BasicAuth_id")) { throw "Missing int_PSSI_IW_BasicAuth_id" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_IW_BasicAuth_authorization")) { throw "Missing int_PSSI_IW_BasicAuth_authorization" }
