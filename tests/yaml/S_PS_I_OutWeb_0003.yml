@@ -7,5 +7,6 @@ pipelines:
           nodePool: win_2019
           integrations:
             - name: PSSI_OW_BasicAuth
+        execution:
           onExecute:
             - echo "executing step..."
