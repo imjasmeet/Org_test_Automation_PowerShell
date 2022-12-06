@@ -5,20 +5,15 @@ pipelines:
       - name: S_PS_I_BitbucketS_0002
         type: PowerShell
         configuration:
+          nodePool: win_2019
           integrations:
             - name: s_bitbucketServer
         execution:
           onExecute:
             - echo "executing step..."
-            - |
-              [ ! -z "$int_s_bitbucketServer_masterName" ]
-            - |
-              [ ! -z "$int_s_bitbucketServer_username" ]
-            - |
-              [ ! -z "$int_s_bitbucketServer_name" ]
-            - |
-              [ ! -z "$int_s_bitbucketServer_password" ]
-            - |
-              [ ! -z "$int_s_bitbucketServer_id" ]
-            - |
-              [ ! -z "$int_s_bitbucketServer_url" ]
+            - if ([string]::IsNullOrEmpty("$int_s_bitbucketServer_masterName")) { throw "Missing int_s_bitbucketServer_masterName" }
+            - if ([string]::IsNullOrEmpty("$int_s_bitbucketServer_username")) { throw "Missing int_s_bitbucketServer_username" }
+            - if ([string]::IsNullOrEmpty("$int_s_bitbucketServer_name")) { throw "Missing int_s_bitbucketServer_name" }
+            - if ([string]::IsNullOrEmpty("$int_s_bitbucketServer_password")) { throw "Missing int_s_bitbucketServer_password" }
+            - if ([string]::IsNullOrEmpty("$int_s_bitbucketServer_id")) { throw "Missing int_s_bitbucketServer_id" }
+            - if ([string]::IsNullOrEmpty("$int_s_bitbucketServer_url")) { throw "Missing int_s_bitbucketServer_url" }

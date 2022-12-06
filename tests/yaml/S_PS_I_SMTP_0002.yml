@@ -4,30 +4,20 @@ pipelines:
       - name: S_PS_I_SMTP_0002
         type: PowerShell
         configuration:
+          nodePool: win_2019
           integrations:
             - name: PSSI_SMTP
         execution:
           onExecute:
             - echo "executing step..."
-            - |
-              [ ! -z "$int_PSSI_SMTP_emailSender"  ]
-            - |
-              [ ! -z "$int_PSSI_SMTP_emailAuthUser"  ]
-            - |
-              [ ! -z "$int_PSSI_SMTP_hostname"  ]
-            - |
-              [ ! -z "$int_PSSI_SMTP_id"  ]
-            - |
-              [ ! -z "$int_PSSI_SMTP_masterName"  ]
-            - |
-              [ ! -z "$int_PSSI_SMTP_secure"  ]
-            - |
-              [ ! -z "$int_PSSI_SMTP_emailAuthPassword"  ]
-            - |
-              [ ! -z "$int_PSSI_SMTP_proxy"  ]
-            - |
-              [ ! -z "$int_PSSI_SMTP_port"  ]
-            - |
-              [ ! -z "$int_PSSI_SMTP_name"  ]
-            - |
-              [ ! -z "$int_PSSI_SMTP_host"  ]
+            - if ([string]::IsNullOrEmpty("$int_PSSI_SMTP_emailSender")) { throw "Missing int_PSSI_SMTP_emailSender" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_SMTP_emailAuthUser")) { throw "Missing int_PSSI_SMTP_emailAuthUser" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_SMTP_hostname")) { throw "Missing int_PSSI_SMTP_hostname" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_SMTP_id")) { throw "Missing int_PSSI_SMTP_id" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_SMTP_masterName")) { throw "Missing int_PSSI_SMTP_masterName" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_SMTP_secure")) { throw "Missing int_PSSI_SMTP_secure" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_SMTP_emailAuthPassword")) { throw "Missing int_PSSI_SMTP_emailAuthPassword" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_SMTP_proxy")) { throw "Missing int_PSSI_SMTP_proxy" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_SMTP_port")) { throw "Missing int_PSSI_SMTP_port" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_SMTP_name")) { throw "Missing int_PSSI_SMTP_name" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_SMTP_host")) { throw "Missing int_PSSI_SMTP_host" }

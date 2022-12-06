@@ -4,24 +4,17 @@ pipelines:
       - name: S_PS_I_Jenkins_0002
         type: PowerShell
         configuration:
+          nodePool: win_2019
           integrations:
             - name: PSSI_Jenkins
         execution:
           onExecute:
             - echo "executing step..."
-            - |
-              [ ! -z "$int_PSSI_Jenkins_url" ]
-            - |
-              [ ! -z "$int_PSSI_Jenkins_apiToken" ]
-            - |
-              [ ! -z "$int_PSSI_Jenkins_id" ]
-            - |
-              [ ! -z "$int_PSSI_Jenkins_name" ]
-            - |
-              [ ! -z "$int_PSSI_Jenkins_username" ]
-            - |
-              [ ! -z "$int_PSSI_Jenkins_hookPassword" ]
-            - |
-              [ ! -z "$int_PSSI_Jenkins_masterName" ]
-            - |
-              [ ! -z "$int_PSSI_Jenkins_hookUsername" ]
+            - if ([string]::IsNullOrEmpty("$int_PSSI_Jenkins_url")) { throw "Missing int_PSSI_Jenkins_url" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_Jenkins_apiToken")) { throw "Missing int_PSSI_Jenkins_apiToken" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_Jenkins_id")) { throw "Missing int_PSSI_Jenkins_id" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_Jenkins_name")) { throw "Missing int_PSSI_Jenkins_name" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_Jenkins_username")) { throw "Missing int_PSSI_Jenkins_username" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_Jenkins_hookPassword")) { throw "Missing int_PSSI_Jenkins_hookPassword" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_Jenkins_masterName")) { throw "Missing int_PSSI_Jenkins_masterName" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_Jenkins_hookUsername")) { throw "Missing int_PSSI_Jenkins_hookUsername" }

@@ -4,18 +4,14 @@ pipelines:
       - name: S_PS_I_NewRelic_0002
         type: PowerShell
         configuration:
+          nodePool: win_2019
           integrations:
             - name: PSSI_NewRelic
         execution:
           onExecute:
             - echo "executing step..."
-            - |
-              [ ! -z "$int_PSSI_NewRelic_masterName"  ]
-            - |
-              [ ! -z "$int_PSSI_NewRelic_url"  ]
-            - |
-              [ ! -z "$int_PSSI_NewRelic_name"  ]
-            - |
-              [ ! -z "$int_PSSI_NewRelic_token"  ]
-            - |
-              [ ! -z "$int_PSSI_NewRelic_id"  ]
+            - if ([string]::IsNullOrEmpty("$int_PSSI_NewRelic_masterName")) { throw "Missing int_PSSI_NewRelic_masterName" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_NewRelic_url")) { throw "Missing int_PSSI_NewRelic_url" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_NewRelic_name")) { throw "Missing int_PSSI_NewRelic_name" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_NewRelic_token")) { throw "Missing int_PSSI_NewRelic_token" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_NewRelic_id")) { throw "Missing int_PSSI_NewRelic_id" }

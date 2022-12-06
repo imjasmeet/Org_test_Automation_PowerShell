@@ -11,15 +11,9 @@ pipelines:
         execution:
           onExecute:
             - write-output "executing step..."
-            - |
-              [ ! -z "$int_PSSI_AzureKeys_name" ]
-            - |
-              [ ! -z "$int_PSSI_AzureKeys_password" ]
-            - |
-              [ ! -z "$int_PSSI_AzureKeys_appId" ]
-            - |
-              [ ! -z "$int_PSSI_AzureKeys_masterName" ]
-            - |
-              [ ! -z "$int_PSSI_AzureKeys_id" ]
-            - |
-              [ ! -z "$int_PSSI_AzureKeys_tenant" ]
+            - if ([string]::IsNullOrEmpty("$int_PSSI_AzureKeys_name")) { throw "Missing int_PSSI_AzureKeys_name" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_AzureKeys_password")) { throw "Missing int_PSSI_AzureKeys_password" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_AzureKeys_appId")) { throw "Missing int_PSSI_AzureKeys_appId" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_AzureKeys_masterName")) { throw "Missing int_PSSI_AzureKeys_masterName" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_AzureKeys_id")) { throw "Missing int_PSSI_AzureKeys_id" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_AzureKeys_tenant")) { throw "Missing int_PSSI_AzureKeys_tenant" }

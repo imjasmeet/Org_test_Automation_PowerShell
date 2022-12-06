@@ -10,11 +10,7 @@ pipelines:
         execution:
           onExecute:
             - write-output "executing step..."
-            - |
-              [ ! -z "$int_PSSI_PemKey_masterName" ]
-            - |
-              [ ! -z "$int_PSSI_PemKey_key" ]
-            - |
-              [ ! -z "$int_PSSI_PemKey_id" ]
-            - |
-              [ ! -z "$int_PSSI_PemKey_name" ]
+            - if ([string]::IsNullOrEmpty("$int_PSSI_PemKey_masterName")) { throw "Missing int_PSSI_PemKey_masterName" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_PemKey_key")) { throw "Missing int_PSSI_PemKey_key" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_PemKey_id")) { throw "Missing int_PSSI_PemKey_id" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_PemKey_name")) { throw "Missing int_PSSI_PemKey_name" }

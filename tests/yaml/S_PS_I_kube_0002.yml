@@ -10,13 +10,8 @@ pipelines:
         execution:
           onExecute:
             - write-output "executing step..."
-            - |
-              [ ! -z "$int_PSSI_Kubernetes_masterName"  ]
-            - |
-              [ ! -z "$int_PSSI_Kubernetes_id"  ]
-            - |
-              [ ! -z "$KUBECONFIG"  ]
-            - |
-              [ ! -z "$int_PSSI_Kubernetes_kubeconfig"  ]
-            - |
-              [ ! -z "$int_PSSI_Kubernetes_name"  ]
+            - if ([string]::IsNullOrEmpty("$int_PSSI_Kubernetes_masterName")) { throw "Missing int_PSSI_Kubernetes_masterName" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_Kubernetes_id")) { throw "Missing int_PSSI_Kubernetes_id" }
+            - if ([string]::IsNullOrEmpty("$KUBECONFIG")) { throw "Missing KUBECONFIG" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_Kubernetes_kubeconfig")) { throw "Missing int_PSSI_Kubernetes_kubeconfig" }
+            - if ([string]::IsNullOrEmpty("$int_PSSI_Kubernetes_name")) { throw "Missing int_PSSI_Kubernetes_name" }
