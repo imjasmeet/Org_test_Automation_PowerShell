@@ -1,3 +1,4 @@
+pipelines:
   - name: pipelines_S_PS_I_PEM_0003
     steps:
       - name: S_PS_I_PEM_0003
