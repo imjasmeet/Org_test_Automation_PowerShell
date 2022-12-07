@@ -1,8 +1,8 @@
 pipelines:
 
-  - name: pipelines_S_PS_I-Bitbucket_0001
+  - name: pipelines_S_PS_I_Bitbucket_0001
     steps:
-      - name: S_PS_I-Bitbucket_0001
+      - name: S_PS_I_Bitbucket_0001
         type: PowerShell
         configuration:
           nodePool: win_2019
