@@ -29,7 +29,7 @@ pipelines:
             - echo "File spec ${run_id}" > PowerShellLinuxVMDeploy_fileSpec.txt
             - jfrog rt upload PowerShellLinuxVMDeploy_fileSpec.txt test-automation-generic-local
       - name: S_PS_LinuxVMDeploy_5950_0009_2
-        type: jfrog_dev/LinuxVMDeploy
+        type: LinuxVMDeploy
         configuration:
           nodePool: win_2019
           integrations:

@@ -11,7 +11,7 @@ pipelines:
   - name: S_PS_LinuxVMDeploy_5950_0016
     steps:
       - name: S_PS_LinuxVMDeploy_5950_0016_1
-        type: jfrog_dev/LinuxVMDeploy
+        type: LinuxVMDeploy
         configuration:
           nodePool: win_2019
           integrations:
