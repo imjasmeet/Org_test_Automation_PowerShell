@@ -17,16 +17,14 @@ pipelines:
           nodePool: win_2019
         execution:
           onExecute:
+            - Set-Variable -Name "test" -Scope Global -Value "step2"
             - export_run_variables
             - if($test -ne "step1"){
               Write-Error "Stop" -ErrorAction Stop
               }
-            - add_run_variables "test=fromStep2" 'step2="addedOneMoreVariable."' 
-            - Write-Host test=${test} step2={step2}
+            - add_run_variables "test=fromStep2"
+            - Write-Host test=${test}
             - if($test -ne "fromStep2"){
-              Write-Error "Stop" -ErrorAction Stop
-              }
-            - if($step2 -ne "addedOneMoreVariable."){
               Write-Error "Stop" -ErrorAction Stop
               }
 
@@ -38,11 +36,7 @@ pipelines:
           nodePool: win_2019
         execution:
           onExecute:
-            - export_run_variables
-            - Write-Host test=${test} step2={step2}
+            - Write-Host test=${test}
             - if($test -ne "fromStep2"){
-              Write-Error "Stop" -ErrorAction Stop
-              }
-            - if($step2 -ne "addedOneMoreVariable."){
               Write-Error "Stop" -ErrorAction Stop
               }

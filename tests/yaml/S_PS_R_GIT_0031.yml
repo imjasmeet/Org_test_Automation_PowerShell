@@ -26,5 +26,8 @@ pipelines:
           onExecute:
             - write-output "executing step..."
             - get-childitem $res_S_PS_R_GIT_0031_GitRepo_resourcePath
+            - Push-Location $res_S_PS_R_GIT_0031_GitRepo_resourcePath
             - git log
+            - git rev-list --count --merges master
+            - if ((git rev-list --count --merges master) -gt 4) { throw "Found too many commits" }
             - ls
