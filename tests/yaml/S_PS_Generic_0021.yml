@@ -9,4 +9,4 @@ pipelines:
         execution:
           onExecute:
             - write-output "executing step..."
-            - Start-Sleep -Second 120
+            - Start-Sleep -Second 180

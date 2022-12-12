@@ -22,7 +22,7 @@ pipelines:
             - if($foo -ne "fromStep1"){
               Write-Error "Stop" -ErrorAction Stop
               }
-            - add_run_variables "foo=fromStep2" 'step2="addedOneMoreVariable."' 
+            - add_run_variables "foo=fromStep2" step2="addedOneMoreVariable."
             - Write-Host foo=${foo} runVariable1=${runVariable1} runVariable2={runVariable2} step2={step2}
             - if($scm -ne "gitRepo"){
               Write-Error "Stop" -ErrorAction Stop

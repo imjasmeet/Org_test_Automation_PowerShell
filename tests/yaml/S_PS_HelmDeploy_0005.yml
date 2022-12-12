@@ -18,7 +18,7 @@ resources:
         include: master
 
 pipelines:
-  - name: S_PS_HelmDeploy_BuildInfo_0005_generic
+  - name: S_PS_HelmDeploy_0005
     configuration:
       environmentVariables:
         readOnly:

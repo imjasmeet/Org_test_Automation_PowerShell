@@ -2,7 +2,7 @@ template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
 resources:
-  - name: S_PS_HBGRoleSwitch_5978_0002_git_resource
+  - name: S_PS_HBGRS_5978_0002_repo
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
@@ -11,7 +11,7 @@ resources:
         include: master
 
 pipelines:
-  - name: S_PS_HBGRoleSwitch_5978_0002
+  - name: S_PS_HBGRS_5978_0002
     configuration:
       nodePool: win_2019
       environmentVariables:
@@ -28,7 +28,7 @@ pipelines:
           integrations:
             - name: s_kubernetes
           inputResources:
-            - name: S_PS_HBGRoleSwitch_5978_0002_git_resource
+            - name: S_PS_HBGRS_5978_0002_repo
           chartPath: tests/core/helmbluegreen/simplehelm
           namespace: ${k8s_namespace}
           blueReleaseName: ${blue_release_name}-${run_id}
@@ -74,7 +74,7 @@ pipelines:
           integrations:
             - name: s_kubernetes
           inputResources:
-            - name: S_PS_HBGRoleSwitch_5978_0002_git_resource
+            - name: S_PS_HBGRS_5978_0002_repo
           chartPath: tests/core/helmbluegreen/simplehelm
           namespace: ${k8s_namespace}
           blueReleaseName: ${blue_release_name}-${run_id}
