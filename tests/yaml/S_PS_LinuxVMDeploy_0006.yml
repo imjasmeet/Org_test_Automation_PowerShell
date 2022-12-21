@@ -23,6 +23,8 @@ resources:
 
 pipelines:
   - name: S_PS_LinuxVMDeploy_0006
+    configuration:
+      jfrogCliVersion: 2
     steps:
       - name: S_PS_LinuxVMDeploy_0006_1
         type: PowerShell
@@ -85,4 +87,4 @@ pipelines:
             - name: S_PS_LinuxVMDeploy_0006_3
         execution:
           onExecute:
-            - "$jfrog_cli_path rt release-bundle-delete --quiet --dist-url=$int_s_distribution_url --user=$int_s_distribution_user --password=$int_s_distribution_apikey --delete-from-dist=true S_PS_LinuxVMDeploy_0006 \"\" "
+            - "jfrog ds release-bundle-delete --quiet --url=$int_s_distribution_url --user=$int_s_distribution_user --password=$int_s_distribution_apikey --delete-from-dist=true S_PS_LinuxVMDeploy_0006 ${run_id}"
