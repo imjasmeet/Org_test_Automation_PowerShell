@@ -1,0 +1,26 @@
+resources:
+  - name: S_PS_R_DISTRULE_0002_DistributionRule
+    type: DistributionRule
+    configuration:
+      sourceDistribution: PSSR_distribution
+      serviceName: svce
+      siteName: "*"
+      cityName: "*"
+      countryCodes:
+        - IN
+        - US
+        - UK
+
+pipelines:
+  - name: pipelines_S_PS_R_DISTRULE_0002
+    steps:
+      - name: S_PS_R_DISTRULE_0002
+        type: PowerShell
+        configuration:
+          nodePool: win_2019
+          inputResources:
+            - name: S_PS_R_DISTRULE_0002_DistributionRule
+              trigger: true
+        execution:
+          onExecute:
+            - Write-Output "executing step..."
