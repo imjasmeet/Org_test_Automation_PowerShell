@@ -1,0 +1,75 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_PS_Tasks_9928_02_repo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_PowerShell.path }}
+      branches:
+        include: {{ gitBranch }}
+
+pipelines:
+  - name: S_PS_Tasks_9928_02_pipeline
+    configuration:
+      nodePool: win_2019
+      jfrogCliVersion: 2
+      affinityGroup: tasks
+    steps:
+      - name: S_PS_Tasks_9928_02_step
+        type: PowerShell
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_PS_Tasks_9928_02_repo
+              trigger: false
+        execution:
+          onStart:
+            - Set-Variable -Name "taskVersion" -Scope "Global" -Value "v19.9928.${run_id}"
+            - New-Item -Path "$step_tmp_dir/task" -ItemType Container
+            - Copy-Item -Path "${res_S_PS_Tasks_9928_02_repo_resourcePath}/tests/tasks/hello/*" -Destination $step_tmp_dir/task/ -Recurse -Force
+            - Push-Location $step_tmp_dir/
+            - jf rt u "task/*" "test-automation-generic-local/jfrog/hello/$taskVersion.zip" --archive zip
+            - Pop-Location
+            - Remove-Item -Path "$step_tmp_dir/task" -Recurse -Force
+            - New-Item -Path "$step_tmp_dir/task" -ItemType Container
+            - Copy-Item -Path "${res_S_PS_Tasks_9928_02_repo_resourcePath}/tests/tasks/parent/*" -Destination $step_tmp_dir/task/ -Recurse -Force
+            - Push-Location $step_tmp_dir/
+            - jf rt u "task/*" "test-automation-generic-local/jfrog/parent/${taskVersion}.zip" --archive zip
+            - Remove-Item -Path "$step_tmp_dir/task" -Recurse
+
+          onExecute:
+            - task: jfrog/parent@${taskVersion}
+              repository: test-automation-generic-local
+              id: S_PS_Tasks_9928_02_task
+              input:
+                taskPath: jfrog/hello@${taskVersion}
+            - end_step "failure"
+          onComplete:
+            - echo "on Complete"
+          onSuccess:
+            - echo "on Success"
+          onFailure:
+            - echo "on Failure"
+
+      - name: S_PS_Tasks_9928_02_step_cleanup
+        type: PowerShell
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputSteps:
+            - name: S_PS_Tasks_9928_02_step
+              status:
+                - failure
+                - error
+                - success
+                - skipped
+                - timeout
+        execution:
+          onExecute:
+            - Set-Variable -Name "taskVersion" -Scope "Global" -Value "v19.9928.${run_id}"
+            - try { jf rt del "test-automation-generic-local/jfrog/hello/${taskVersion}.zip" } catch {}
+            - try { jf rt del "test-automation-generic-local/jfrog/parent/${taskVersion}.zip" } catch {}
+
