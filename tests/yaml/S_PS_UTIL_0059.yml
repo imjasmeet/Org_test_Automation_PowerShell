@@ -1,12 +1,8 @@
-template: true
-valuesFilePath: ../values/gitRepoValues.yml
-
 resources:
   - name: S_PS_UTIL_0059
-    type: GitRepo
+    type: PropertyBag
     configuration:
-      gitProvider: s_gitHub
-      path: {{ .Values.GitHub.Org_test_Automation.path }}
+      testValue: test${run_id}
 
 pipelines:
   - name: pipeline_S_PS_UTIL_0059
@@ -15,11 +11,10 @@ pipelines:
         type: PowerShell
         configuration:
           nodePool: win_2019
-          # outputResources:
-          #   - name: outgoing
           inputResources:
             - name: S_PS_UTIL_0059
 
         execution:
           onExecute:
-            - write-output "image resource path is $res_myImage_resourcePath"
+            - find_resource_variable S_PS_UTIL_0059 testValue
+            - if ( ( find_resource_variable S_PS_UTIL_0059 testValue ) -ne "test${run_id}" ) { throw "Wrong value" }
