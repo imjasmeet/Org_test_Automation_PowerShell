@@ -1,11 +1,9 @@
-resources:  
+resources:
   - name: S_PS_Generic_0046_Image
-    type: Image	
-    configuration:	   
-      registry: PSSG_DockerRegistry_PSG_01	      
-      imageName: shippabledocker/jfreq_win	      
-      imageTag: latest	
-      autoPull: true
+    type: PropertyBag
+    configuration:
+      imageName: shippabledocker/jfreq_win
+      imageTag: latest
 
 pipelines:
 
