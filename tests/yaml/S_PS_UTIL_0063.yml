@@ -9,8 +9,6 @@ pipelines:
         execution:
           onExecute:
             - add_run_variables runVariable="asdffdjksfj.       k455457457"
-            - export_run_variables
-
 
       - name: S_PS_UTIL_0063_2
         type: Bash
@@ -21,3 +19,4 @@ pipelines:
         execution:
           onExecute:
             - echo $runVariable
+            - if [ "$runVariable" != "asdffdjksfj.       k455457457" ]; then return 1; fi
