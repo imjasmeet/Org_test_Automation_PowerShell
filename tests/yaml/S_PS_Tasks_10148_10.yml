@@ -30,15 +30,15 @@ pipelines:
             - New-Item -Path "$step_tmp_dir/task" -ItemType Container
             - Copy-Item -Path "${res_S_PS_Tasks_10148_10_repo_resourcePath}/tests/tasks/hello/*" -Destination $step_tmp_dir/task/ -Recurse -Force
             - Push-Location $step_tmp_dir/
-            - jf rt u "task/*" "test-automation-generic-local/jfrog/hello/${taskVersion}.zip" --archive zip
+            - jf rt u "task/*" "test-automation-tasks-local/jfrog/hello/@v/${taskVersion}.zip" --archive zip
           onComplete:
             - echo "on Complete"
           onSuccess:
             - task: jfrog/hello@${taskVersion}
-              repository: test-automation-generic-local
+              repository: test-automation-tasks-local
               id: S_PS_Tasks_10148_10_task
               input:
                 target: "start"
             - echo "on Success"
-            - try { jf rt del "test-automation-generic-local/jfrog/hello/${taskVersion}.zip" } catch {}
+            - try { jf rt del "test-automation-tasks-local/jfrog/hello/@v/${taskVersion}.zip" } catch {}
 
